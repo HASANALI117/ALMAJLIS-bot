@@ -21,7 +21,7 @@ client.once("ready", () => {
 });
 
 // Schedule a task to run at 1 AM every day
-cron.schedule("0 1 * * *", () => {
+cron.schedule("30 1 * * *", () => {
   const guild = client.guilds.cache.first();
   const member = guild.members.cache.get(HUSAIN_ID);
 
