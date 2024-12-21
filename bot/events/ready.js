@@ -1,5 +1,6 @@
-module.exports = (client) => {
-  client.once("ready", () => {
-    console.log("Logged in as ${client.user.tag}");
-  });
+module.exports = {
+  name: "ready",
+  execute(client) {
+    console.log(`Bot is Online. Logged in as ${client.user.tag}`);
+  },
 };

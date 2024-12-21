@@ -32,7 +32,7 @@ const eventFiles = fs
 
 for (const file of eventFiles) {
   const event = require(`./events/${file}`);
-  client.on(eventName, (...args) => event(client, ...args));
+  client.on(event.name, (...args) => event.execute(client, ...args));
 }
 
 client.login(process.env.TOKEN);
