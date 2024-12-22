@@ -4,12 +4,12 @@ const guildSchema = new Schema(
   {
     guildID: { type: String, required: true, unique: true },
     name: { type: String, required: true },
-    iconHash: { type: String, default: null },
-    openTicketsCategoryID: { type: String, default: null },
-    closedTicketsCategoryID: { type: String, default: null },
-    transcriptChannelID: { type: String, default: null },
-    modRoleIDs: { type: [String], default: [] },
-    pingRoleIDs: { type: [String], default: [] },
+    welcomeChannel: { type: String, default: "welcome" },
+    welcomeMessage: {
+      type: String,
+      default:
+        "Welcome to the server, {member}! 🎉 We’re glad to have you here.",
+    },
   },
   { timestamps: true }
 );
