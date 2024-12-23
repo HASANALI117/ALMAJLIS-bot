@@ -1,9 +1,6 @@
-const express = require("express");
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-
-const router = express.Router();
 
 const DISCORD_OAUTH_URL = process.env.DISCORD_OAUTH_URL;
 const REDIRECT_URI = process.env.DISCORD_REDIRECT_URI;

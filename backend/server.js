@@ -8,8 +8,9 @@ const MONGODB_URI = process.env.MONGODB_URI;
 const PORT = process.env.PORT || 3000;
 
 // Routes
-const messageRoute = require("./routes/messageRoute");
 const authRoute = require("./routes/authRoute");
+const messageRoute = require("./routes/messageRoute");
+const dashboardRoute = require("./routes/dashboardRoute");
 
 // Middlewares
 const authenticateToken = require("./middlewares/authMiddleware");
@@ -23,11 +24,12 @@ mongoose
 // Express server setup
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(cookieParser());
 
-app.use("/message", authenticateToken, messageRoute);
 app.use("/auth", authRoute);
+app.use("/message", authenticateToken, messageRoute);
+app.use("/dashboard", authenticateToken, dashboardRoute);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
