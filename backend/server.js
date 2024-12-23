@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 3000;
 
 // Routes
 const messageRoute = require("./routes/messageRoute");
+const authRoute = require("./routes/authRoute");
 
 // Connect to MongoDB
 mongoose
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/message", messageRoute);
+app.use("/auth", authRoute);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
