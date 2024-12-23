@@ -1,8 +1,10 @@
 export const navigation = [
-  { name: "Docs", href: "#" },
-  { name: "Invite", href: "#" },
-  { name: "Discord", href: "#" },
-  { name: "Status", href: "#" },
+  { name: "Docs", href: "#", icon: "bxs-book" },
+  { name: "Invite", href: "#", icon: "bx-plus" },
+  { name: "Discord", href: "#", icon: "bxl-discord" },
+  { name: "Status", href: "#", icon: "bxs-heart" },
+  { name: "Guilds", href: "/guilds", icon: "bxs-heart" },
+  { name: "Dashboard", href: "/dashboard", icon: "bxs-heart" },
 ];
 
 export const menu = [
@@ -60,5 +62,72 @@ export const menu = [
       { name: "Suggestions", href: "#", icon: "ChartPieIcon", current: false },
       { name: "Voice link", href: "#", icon: "ChartPieIcon", current: false },
     ],
+  },
+];
+
+export const servers = [
+  {
+    id: "1",
+    name: "Server 1",
+    members: 500,
+    channels: 100,
+    roles: 20,
+    icon: "img-1.jpg",
+  },
+  {
+    id: "2",
+    name: "Server 2",
+    members: 500,
+    channels: 100,
+    roles: 20,
+    icon: "img-2.webp",
+  },
+  {
+    id: "1",
+    name: "Server 1",
+    members: 500,
+    channels: 100,
+    roles: 20,
+    icon: "img-1.jpg",
+  },
+  {
+    id: "2",
+    name: "Server 2",
+    members: 500,
+    channels: 100,
+    roles: 20,
+    icon: "img-2.webp",
+  },
+  {
+    id: "1",
+    name: "Server 1",
+    members: 500,
+    channels: 100,
+    roles: 20,
+    icon: "img-1.jpg",
+  },
+  {
+    id: "2",
+    name: "Server 2",
+    members: 500,
+    channels: 100,
+    roles: 20,
+    icon: "img-2.webp",
+  },
+  {
+    id: "1",
+    name: "Server 1",
+    members: 500,
+    channels: 100,
+    roles: 20,
+    icon: "img-1.jpg",
+  },
+  {
+    id: "2",
+    name: "Server 2",
+    members: 500,
+    channels: 100,
+    roles: 20,
+    icon: "img-2.webp",
   },
 ];
