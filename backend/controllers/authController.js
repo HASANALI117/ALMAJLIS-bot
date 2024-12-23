@@ -1,5 +1,6 @@
 const express = require("express");
 const axios = require("axios");
+const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 const router = express.Router();
@@ -9,6 +10,8 @@ const REDIRECT_URI = process.env.DISCORD_REDIRECT_URI;
 const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 const CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
 const DISCORD_API_ENDPOINT = process.env.DISCORD_API_ENDPOINT;
+const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_EXPIRATION = process.env.JWT_EXPIRATION;
 
 exports.authenticate = (req, res) => {
   res.redirect(`${DISCORD_OAUTH_URL}`);
@@ -56,6 +59,20 @@ exports.callback = async (req, res) => {
       },
       { upsert: true, new: true }
     );
+
+    // Generate JWT token
+    const jwtToken = jwt.sign(
+      { userId: id, username: username, avatarHash: avatar },
+      JWT_SECRET,
+      { expiresIn: JWT_EXPIRATION }
+    );
+
+    // Set JWT token in cookies
+    res.cookie("token", jwtToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: 6.048e8,
+    });
 
     // Respond with user data
     const message = user.isNew
