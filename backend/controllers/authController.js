@@ -62,7 +62,7 @@ exports.callback = async (req, res) => {
 
     // Generate JWT token
     const jwtToken = jwt.sign(
-      { userId: id, username: username, avatarHash: avatar },
+      { userID: id, username: username, avatarHash: avatar },
       JWT_SECRET,
       { expiresIn: JWT_EXPIRATION }
     );
@@ -83,8 +83,6 @@ exports.callback = async (req, res) => {
       message,
       user,
     });
-
-    console.log(userResponse.data);
   } catch (error) {
     console.error("OAuth2 Callback Error:", error.message);
     res.status(500).json({ error: error.message });
