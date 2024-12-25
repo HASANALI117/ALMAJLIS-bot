@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSetAtom, useAtom } from "jotai";
 import { userAtom, fetchGuildsAtom, guildsAtom } from "@/atoms/userAtoms";
+import axios from "axios";
 
 const GuildsList = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -22,6 +23,19 @@ const GuildsList = () => {
 
   const [userData] = useAtom(userAtom);
   const [guilds] = useAtom(guildsAtom);
+
+  const handleInvite = async (guildID: string) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3002/dashboard/invite-bot/${guildID}`,
+        { withCredentials: true }
+      );
+
+      window.location.href = response.data.inviteURL;
+    } catch (error) {
+      console.error("Error inviting bot:", error);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -51,6 +65,7 @@ const GuildsList = () => {
             href={`/guilds/${guild.id}`}
             className="cursor-pointer w-80 m-8 bg-gray-600 rounded-lg  p-8 hover:bg-gray-500 transition"
             key={guild.id}
+            onClick={() => handleInvite(guild.id)}
           >
             <h1 className="font-bold text-2xl truncate">{guild.name}</h1>
 

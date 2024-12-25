@@ -2,6 +2,7 @@ const axios = require("axios");
 
 const DISCORD_API_ENDPOINT = process.env.DISCORD_API_ENDPOINT;
 const MANAGE_GUILD_BIT = 1 << 5; // 0x20 (MANAGE_GUILD permission)
+const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 
 exports.getDashboardData = async (req, res) => {
   try {
@@ -41,5 +42,23 @@ exports.getGuilds = async (req, res) => {
     res.json(filteredGuilds);
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+exports.inviteBot = async (req, res) => {
+  try {
+    const { guildID } = req.params;
+    if (!guildID) {
+      return res.status(400).json({ error: "Guild ID is required" });
+    }
+
+    const inviteURL = `https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&scope=bot&permissions=364870364415&guild_id=${guildID}`;
+
+    res.json({ inviteURL });
+
+    console.log(inviteURL);
+  } catch (error) {
+    console.error("Error creating bot invite URL:", error.message);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
