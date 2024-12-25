@@ -3,39 +3,32 @@
 import Link from "next/link";
 import Image from "next/image";
 import { navigation } from "../constants";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect } from "react";
+import { useSetAtom, useAtom } from "jotai";
+import { fetchUserAtom, userAtom } from "@/atoms/userAtoms";
 
-type User = {
-  userID: string;
-  username: string;
-  avatar: string;
-};
 const Navbar = () => {
-  const [userData, setUserData] = useState<User>();
+  const fetchUser = useSetAtom(fetchUserAtom);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get("http://localhost:3002/dashboard", {
-          withCredentials: true,
-        });
+    fetchUser();
+  }, [fetchUser]);
 
-        setUserData(response.data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    fetchUserData();
-  }, []);
+  const [userData] = useAtom(userAtom);
 
   return (
     <nav className="bg-gray-800">
       <div className="flex justify-between h-24 p-6 items-center">
         <div className="flex space-x-4">
-          <Link href={"/"}>
-            <Image src={"/logo.png"} alt="logo" width={60} height={50} />
+          <Link href={"/"} className="flex justify-center items-center pr-10">
+            <Image
+              src={"/js.jpg"}
+              alt="logo"
+              width={60}
+              height={50}
+              className="rounded-full h-10 w-10"
+            />
+            <h1 className="pl-4 font-bold">ALMAJLIS</h1>
           </Link>
           {navigation.map((item) => (
             <a

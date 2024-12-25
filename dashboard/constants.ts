@@ -3,8 +3,8 @@ export const navigation = [
   { name: "Invite", href: "#", icon: "bx-plus" },
   { name: "Discord", href: "#", icon: "bxl-discord" },
   { name: "Status", href: "#", icon: "bxs-heart" },
-  { name: "Guilds", href: "/guilds", icon: "bxs-heart" },
-  { name: "Dashboard", href: "/dashboard", icon: "bxs-heart" },
+  { name: "Guilds", href: "/guilds", icon: "bxs-server" },
+  { name: "Dashboard", href: "/dashboard", icon: "bxs-dashboard" },
 ];
 
 export const menu = [

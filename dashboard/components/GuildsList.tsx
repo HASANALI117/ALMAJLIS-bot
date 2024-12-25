@@ -3,38 +3,25 @@
 import Link from "next/link";
 // import Image from "next/image";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { useSetAtom, useAtom } from "jotai";
+import { userAtom, fetchGuildsAtom, guildsAtom } from "@/atoms/userAtoms";
 
-type Guild = {
-  id: string;
-  name: string;
-  icon: string;
-};
-
-const Guilds = () => {
-  const [guilds, setGuilds] = useState<Guild[]>([]);
+const GuildsList = () => {
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchGuilds = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:3002/dashboard/guilds",
-          {
-            withCredentials: true,
-          }
-        );
+  const fetchGuildsList = useSetAtom(fetchGuildsAtom);
 
-        setGuilds(response.data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      } finally {
-        setIsLoading(false);
-      }
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchGuildsList();
+      setIsLoading(false);
     };
 
-    fetchGuilds();
-  }, []);
+    fetchData();
+  }, [fetchGuildsList]);
+
+  const [userData] = useAtom(userAtom);
+  const [guilds] = useAtom(guildsAtom);
 
   if (isLoading) {
     return (
@@ -55,7 +42,7 @@ const Guilds = () => {
   return (
     <div className="mt-12 text-center">
       <h1 className="font-bold text-4xl">
-        Hello, User! Please select a server to get started
+        Hello, {userData?.username}! Please select a server to get started
       </h1>
 
       <div className="flex justify-center items-center flex-wrap">
@@ -87,4 +74,4 @@ const Guilds = () => {
   );
 };
 
-export default Guilds;
+export default GuildsList;
