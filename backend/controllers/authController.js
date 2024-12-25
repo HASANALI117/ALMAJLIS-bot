@@ -67,19 +67,12 @@ exports.callback = async (req, res) => {
     // Set JWT token in cookies
     res.cookie("token", jwtToken, {
       httpOnly: true,
-      secure: true,
+      secure: false,
       maxAge: 6.048e8,
     });
 
-    // Respond with user data
-    const message = user.isNew
-      ? "New user created"
-      : "User updated successfully";
-
-    res.status(200).json({
-      message,
-      user,
-    });
+    // Redirect to the frontend dashboard
+    res.redirect("http://localhost:3000/guilds");
   } catch (error) {
     console.error("OAuth2 Callback Error:", error.message);
     res.status(500).json({ error: error.message });

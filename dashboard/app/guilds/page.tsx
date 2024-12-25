@@ -1,9 +1,9 @@
-import Guilds from "@/components/Guilds";
+import GuildsList from "@/components/GuildsList";
 
 const page = () => {
   return (
     <div>
-      <Guilds />
+      <GuildsList />
     </div>
   );
 };

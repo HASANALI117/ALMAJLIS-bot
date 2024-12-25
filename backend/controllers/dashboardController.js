@@ -1,6 +1,7 @@
 const axios = require("axios");
 
 const DISCORD_API_ENDPOINT = process.env.DISCORD_API_ENDPOINT;
+const MANAGE_GUILD_BIT = 1 << 5; // 0x20 (MANAGE_GUILD permission)
 
 exports.getDashboardData = async (req, res) => {
   try {
@@ -27,16 +28,17 @@ exports.getGuilds = async (req, res) => {
       return res.status(401).json({ error: "User not logged in" });
     }
 
-    // const access_token = req.user.accessToken;
-
     const guildResponse = await axios.get(
       `${DISCORD_API_ENDPOINT}/users/@me/guilds`,
       { headers: { Authorization: `Bearer ${req.user.accessToken}` } }
     );
 
-    // const { id, username, avatar } = userResponse.data;
+    // Filter guilds where the user has MANAGE_GUILD (Manage Server) permission
+    const filteredGuilds = guildResponse.data.filter(
+      (guild) => (guild.permissions & MANAGE_GUILD_BIT) === MANAGE_GUILD_BIT
+    );
 
-    res.json(guildResponse.data);
+    res.json(filteredGuilds);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
