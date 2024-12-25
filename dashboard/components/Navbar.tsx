@@ -18,7 +18,7 @@ const Navbar = () => {
 
   return (
     <nav className="bg-gray-800">
-      <div className="flex justify-between h-24 p-6 items-center">
+      <div className="flex justify-between h-20 p-6 items-center">
         <div className="flex space-x-4">
           <Link href={"/"} className="flex justify-center items-center pr-10">
             <Image
@@ -26,7 +26,7 @@ const Navbar = () => {
               alt="logo"
               width={60}
               height={50}
-              className="rounded-full h-10 w-10"
+              className="rounded-full w-14 h-14"
             />
             <h1 className="pl-4 font-bold">ALMAJLIS</h1>
           </Link>
@@ -34,7 +34,7 @@ const Navbar = () => {
             <a
               key={item.name}
               href={item.href}
-              className="p-4 flex justify-center items-center hover:text-slate-500 transition"
+              className="px-2 flex justify-center items-center hover:text-slate-500 transition"
             >
               <i className={`bx ${item.icon} pr-2 text-lg`}></i>
               {item.name}
@@ -48,7 +48,7 @@ const Navbar = () => {
               <img
                 src={`https://cdn.discordapp.com/avatars/${userData.userID}/${userData.avatar}.png`}
                 alt="User Avatar"
-                className="w-12 h-12 rounded-full border-2 border-white"
+                className="h-10 w-10 rounded-full"
               />
               <h1 className="text-xl pl-4">{userData.username}</h1>
             </div>

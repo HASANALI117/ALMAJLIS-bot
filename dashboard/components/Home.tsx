@@ -25,10 +25,6 @@ const Home = () => {
 
   console.log(userData);
 
-  const handleLogin = () => {
-    window.location.href = "http://localhost:3002/auth/signin";
-  };
-
   return (
     <div className="flex justify-center mt-20">
       {/* <Image src={"/logo.png"} alt="logo" height={200} width={200}></Image> */}
@@ -46,13 +42,26 @@ const Home = () => {
           <br />
           In <span className="font-extrabold">11,119,480</span> servers
         </p>
-        <button
-          onClick={handleLogin}
+        <a
+          href={
+            userData
+              ? "http://localhost:3000/guilds"
+              : "http://localhost:3002/auth/signin"
+          }
           className="border-[3px] rounded-full py-3 w-full mt-6 flex justify-center items-center hover:bg-gray-400 hover:text-black transition"
         >
-          <i className="bx bxl-discord-alt text-2xl px-2"></i>
-          Login with Discord
-        </button>
+          {userData ? (
+            <>
+              <i className="bx bxs-cog text-2xl px-2"></i>
+              Manage
+            </>
+          ) : (
+            <>
+              <i className="bx bxl-discord-alt text-2xl px-2"></i>
+              Login with Discord
+            </>
+          )}
+        </a>
       </div>
     </div>
   );
