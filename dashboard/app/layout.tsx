@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+// import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "ALMAJLIS Dashboard",
@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link
           href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
@@ -27,7 +27,7 @@ export default function RootLayout({
 
           <main className="flex-grow">{children}</main>
 
-          <Footer />
+          {/* <Footer /> */}
         </div>
       </body>
     </html>
