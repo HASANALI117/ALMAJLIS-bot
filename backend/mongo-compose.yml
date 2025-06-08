@@ -20,6 +20,8 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${ME_CONFIG_MONGODB_ADMINPASSWORD}
       ME_CONFIG_MONGODB_URL: ${ME_CONFIG_MONGODB_URL}
       ME_CONFIG_BASICAUTH: ${ME_CONFIG_BASICAUTH}
+    depends_on:
+      - mongo
 
 volumes:
   mongo-data:
