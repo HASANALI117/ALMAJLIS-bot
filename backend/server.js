@@ -5,7 +5,7 @@ require("dotenv").config();
 const cors = require("cors");
 
 const MONGODB_URI = process.env.MONGODB_URI;
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 
 // Routes
 const authRoute = require("./routes/authRoute");
