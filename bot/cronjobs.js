@@ -1,7 +1,7 @@
-const cron = require("node-cron");
+import cron from "node-cron";
 
 // Schedule a task to run at 1 AM every day
-module.exports = (client) => {
+export default (client) => {
   cron.schedule("30 1 * * *", () => {
     const guild = client.guilds.cache.first();
     const member = guild.members.cache.get(HUSAIN_ID);

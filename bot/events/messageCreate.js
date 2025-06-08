@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   name: "messageCreate",
   execute(client, message) {
     // Ignore bot messages

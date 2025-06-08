@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   name: "guildMemberAdd",
   execute(member) {
     // Specify the channel name where welcome messages will be sent
