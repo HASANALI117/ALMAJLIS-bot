@@ -12,7 +12,7 @@ import api from "@/utils/axios";
 type User = {
   userID: string;
   username: string;
-  avatarHash: string;
+  avatar: string;
 };
 
 interface AuthContextType {

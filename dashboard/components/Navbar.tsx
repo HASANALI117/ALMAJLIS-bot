@@ -3,18 +3,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { navigation } from "../constants";
-import { useEffect } from "react";
-import { useSetAtom, useAtom } from "jotai";
-import { fetchUserAtom, userAtom } from "@/atoms/userAtoms";
+import { useAuth } from "@/contexts";
 
 const Navbar = () => {
-  const fetchUser = useSetAtom(fetchUserAtom);
-
-  useEffect(() => {
-    fetchUser();
-  }, [fetchUser]);
-
-  const [userData] = useAtom(userAtom);
+  const { user, loading } = useAuth();
+  console.log("user", user);
 
   return (
     <nav className="bg-gray-800">
@@ -43,19 +36,22 @@ const Navbar = () => {
         </div>
 
         <div>
-          {userData ? (
+          {loading ? null : user ? (
             <div className="flex justify-center items-center">
               <img
-                src={`https://cdn.discordapp.com/avatars/${userData.userID}/${userData.avatar}.png`}
+                src={`https://cdn.discordapp.com/avatars/${user.userID}/${user.avatar}.png`}
                 alt="User Avatar"
                 className="h-10 w-10 rounded-full"
               />
-              <h1 className="text-xl pl-4">{userData.username}</h1>
+              <h1 className="text-xl pl-4">{user.username}</h1>
             </div>
           ) : (
-            <button className="rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+            <a
+              href="http://localhost:8080/auth/signin"
+              className="rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+            >
               Sign In
-            </button>
+            </a>
           )}
         </div>
       </div>
