@@ -1,7 +1,7 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
-require("dotenv").config();
+require("dotenv").config({ path: "../.env" });
 const cors = require("cors");
 
 const MONGODB_URI = process.env.MONGODB_URI;
