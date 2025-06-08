@@ -7,60 +7,44 @@ export const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: "bxs-dashboard" },
 ];
 
-export const menu = [
+export const sidebarMenu = [
   {
     category: "SETTINGS",
     links: [
-      { name: "Bot Settings", href: "#", icon: "HomeIcon", current: false },
-      { name: "Commands", href: "#", icon: "UsersIcon", current: false },
-      { name: "Weblogs", href: "#", icon: "FolderIcon", current: false },
+      { key: "bot-settings", label: "Bot settings", icon: "⚙️" },
+      { key: "commands", label: "Commands", icon: "💬" },
+      { key: "webhooks", label: "Weblogs", icon: "🌐" },
     ],
   },
   {
     category: "MODERATION",
     links: [
-      { name: "Automod", href: "#", icon: "CalendarIcon", current: false },
-      {
-        name: "Moderation",
-        href: "#",
-        icon: "DocumentDuplicateIcon",
-        current: false,
-      },
-      { name: "Logging", href: "#", icon: "ChartPieIcon", current: false },
-      { name: "Autoroles", href: "#", icon: "ChartPieIcon", current: false },
+      { key: "automod", label: "Automod", icon: "🤖" },
+      { key: "moderation", label: "Moderation", icon: "🛡️" },
+      { key: "logging", label: "Logging", icon: "📝" },
+      { key: "autoroles", label: "Autoroles", icon: "🔔" },
     ],
   },
   {
     category: "GAMING",
     links: [
-      { name: "Game Alert", href: "#", icon: "ChartPieIcon", current: false },
+      { key: "game-alert", label: "Game Alert", icon: "🎮", badge: "NEW" },
     ],
   },
   {
     category: "FEEDS",
     links: [
-      { name: "Twitch", href: "#", icon: "ChartPieIcon", current: false },
-      { name: "Youtube", href: "#", icon: "ChartPieIcon", current: false },
+      { key: "twitch", label: "Twitch", icon: "📺" },
+      { key: "youtube", label: "Youtube", icon: "▶️" },
     ],
   },
   {
     category: "UTILITY",
     links: [
-      { name: "Welcome", href: "#", icon: "ChartPieIcon", current: false },
-      {
-        name: "Reaction roles",
-        href: "#",
-        icon: "ChartPieIcon",
-        current: false,
-      },
-      { name: "Starboard", href: "#", icon: "ChartPieIcon", current: false },
-      { name: "Levels", href: "#", icon: "ChartPieIcon", current: false },
-      { name: "Tags", href: "#", icon: "ChartPieIcon", current: false },
-      { name: "Triggers", href: "#", icon: "ChartPieIcon", current: false },
-      { name: "Embeds", href: "#", icon: "ChartPieIcon", current: false },
-      { name: "Autofeeds", href: "#", icon: "ChartPieIcon", current: false },
-      { name: "Suggestions", href: "#", icon: "ChartPieIcon", current: false },
-      { name: "Voice link", href: "#", icon: "ChartPieIcon", current: false },
+      { key: "welcome", label: "Welcome", icon: "👋" },
+      { key: "reaction-roles", label: "Reaction roles", icon: "😀" },
+      { key: "starboard", label: "Starboard", icon: "📊" },
+      { key: "levels", label: "Levels", icon: "⬆️", badge: "Premium" },
     ],
   },
 ];
