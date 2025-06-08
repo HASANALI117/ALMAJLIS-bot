@@ -1,9 +1,5 @@
 import axios from "axios";
 
-const DISCORD_API_ENDPOINT = process.env.DISCORD_API_ENDPOINT;
-const MANAGE_GUILD_BIT = 1 << 5; // 0x20 (MANAGE_GUILD permission)
-const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
-
 export const getDashboardData = async (req, res) => {
   try {
     if (req.user) {
@@ -24,6 +20,9 @@ export const getDashboardData = async (req, res) => {
 };
 
 export const getGuilds = async (req, res) => {
+  const DISCORD_API_ENDPOINT = process.env.DISCORD_API_ENDPOINT;
+  const MANAGE_GUILD_BIT = 1 << 5; // 0x20 (MANAGE_GUILD permission)
+
   try {
     if (!req.user) {
       return res.status(401).json({ error: "User not logged in" });
@@ -46,6 +45,8 @@ export const getGuilds = async (req, res) => {
 };
 
 export const inviteBot = async (req, res) => {
+  const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
+
   try {
     const { guildID } = req.params;
     if (!guildID) {

@@ -2,22 +2,23 @@ import axios from "axios";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
-// Load environment variables
-const DISCORD_OAUTH_URL = process.env.DISCORD_OAUTH_URL;
-const REDIRECT_URI = process.env.DISCORD_REDIRECT_URI;
-const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
-const CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
-const DISCORD_API_ENDPOINT = process.env.DISCORD_API_ENDPOINT;
-const JWT_SECRET = process.env.JWT_SECRET;
-const JWT_EXPIRATION = process.env.JWT_EXPIRATION;
-
 // This function initiates the OAuth2 authentication flow with Discord
 export const authenticate = (req, res) => {
+  const DISCORD_OAUTH_URL = process.env.DISCORD_OAUTH_URL;
+
+  console.log(DISCORD_OAUTH_URL);
   res.redirect(`${DISCORD_OAUTH_URL}`);
 };
 
 // This function handles the OAuth2 callback from Discord after user authentication
 export const callback = async (req, res) => {
+  const REDIRECT_URI = process.env.DISCORD_REDIRECT_URI;
+  const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
+  const CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
+  const DISCORD_API_ENDPOINT = process.env.DISCORD_API_ENDPOINT;
+  const JWT_SECRET = process.env.JWT_SECRET;
+  const JWT_EXPIRATION = process.env.JWT_EXPIRATION;
+
   try {
     const { code } = req.query;
     if (!code) {

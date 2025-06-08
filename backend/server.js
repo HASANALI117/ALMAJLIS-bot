@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
+dotenv.config({ path: "../.env" });
 
 // Routes
 import authRoute from "./routes/authRoute.js";
@@ -10,8 +11,6 @@ import messageRoute from "./routes/messageRoute.js";
 import dashboardRoute from "./routes/dashboardRoute.js";
 // Middlewares
 import { authenticateToken } from "./middlewares/authMiddleware.js";
-
-dotenv.config({ path: "../.env" });
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const PORT = process.env.PORT || 8000;
