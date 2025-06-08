@@ -1,10 +1,10 @@
-const express = require("express");
-const messageController = require("../controllers/messageController");
+import express from "express";
+import { getMessage } from "../controllers/messageController.js";
 
 const router = express.Router();
 
-router.get("/", messageController.getMessage);
+router.get("/", getMessage);
 
 // router.post("/", messageController.createMessage);
 
-module.exports = router;
+export default router;

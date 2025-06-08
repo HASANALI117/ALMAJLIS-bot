@@ -1,19 +1,20 @@
-const express = require("express");
-const cookieParser = require("cookie-parser");
-const mongoose = require("mongoose");
-require("dotenv").config({ path: "../.env" });
-const cors = require("cors");
+import express from "express";
+import cookieParser from "cookie-parser";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import cors from "cors";
+
+// Routes
+import authRoute from "./routes/authRoute.js";
+import messageRoute from "./routes/messageRoute.js";
+import dashboardRoute from "./routes/dashboardRoute.js";
+// Middlewares
+import { authenticateToken } from "./middlewares/authMiddleware.js";
+
+dotenv.config({ path: "../.env" });
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const PORT = process.env.PORT || 8000;
-
-// Routes
-const authRoute = require("./routes/authRoute");
-const messageRoute = require("./routes/messageRoute");
-const dashboardRoute = require("./routes/dashboardRoute");
-
-// Middlewares
-const authenticateToken = require("./middlewares/authMiddleware");
 
 // Connect to MongoDB
 mongoose

@@ -1,6 +1,6 @@
-const Message = require("../models/Message");
+import Message from "../models/Message.js";
 
-exports.getMessage = async (req, res) => {
+export const getMessage = async (req, res) => {
   res.send("testing cookies");
   // console.log(req.cookies);
 };

@@ -1,11 +1,11 @@
-const express = require("express");
-const authController = require("../controllers/authController");
+import express from "express";
+import { authenticate, callback } from "../controllers/authController.js";
 
 const router = express.Router();
 
-router.get("/signin", authController.authenticate);
+router.get("/signin", authenticate);
 
-router.get("/discord/callback", authController.callback);
+router.get("/discord/callback", callback);
 
 // router.get("/discord", authController.authenticate);
 // router.get("/discord/callback", authController.callback);
@@ -18,4 +18,4 @@ router.get("/discord/callback", authController.callback);
 // router.get("/user", authController.getUserDetails);
 // router.get("/logout", authController.logout);
 
-module.exports = router;
+export default router;

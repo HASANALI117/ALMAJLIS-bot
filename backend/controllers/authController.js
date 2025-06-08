@@ -1,7 +1,8 @@
-const axios = require("axios");
-const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+import axios from "axios";
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
 
+// Load environment variables
 const DISCORD_OAUTH_URL = process.env.DISCORD_OAUTH_URL;
 const REDIRECT_URI = process.env.DISCORD_REDIRECT_URI;
 const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
@@ -10,10 +11,13 @@ const DISCORD_API_ENDPOINT = process.env.DISCORD_API_ENDPOINT;
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRATION = process.env.JWT_EXPIRATION;
 
-exports.authenticate = (req, res) => {
+// This function initiates the OAuth2 authentication flow with Discord
+export const authenticate = (req, res) => {
   res.redirect(`${DISCORD_OAUTH_URL}`);
 };
-exports.callback = async (req, res) => {
+
+// This function handles the OAuth2 callback from Discord after user authentication
+export const callback = async (req, res) => {
   try {
     const { code } = req.query;
     if (!code) {
