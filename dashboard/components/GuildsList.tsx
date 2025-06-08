@@ -2,27 +2,13 @@
 
 import Link from "next/link";
 // import Image from "next/image";
-import { useEffect, useState } from "react";
-import { useSetAtom, useAtom } from "jotai";
-import { userAtom, fetchGuildsAtom, guildsAtom } from "@/atoms/userAtoms";
 import axios from "axios";
+import { useAuth } from "@/contexts/index";
+import { useGuilds } from "@/contexts/index";
 
 const GuildsList = () => {
-  const [isLoading, setIsLoading] = useState(true);
-
-  const fetchGuildsList = useSetAtom(fetchGuildsAtom);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetchGuildsList();
-      setIsLoading(false);
-    };
-
-    fetchData();
-  }, [fetchGuildsList]);
-
-  const [userData] = useAtom(userAtom);
-  const [guilds] = useAtom(guildsAtom);
+  const { user, loading } = useAuth();
+  const { guilds } = useGuilds();
 
   const handleInvite = async (guildID: string) => {
     try {
@@ -37,7 +23,7 @@ const GuildsList = () => {
     }
   };
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="mt-12 text-center">
         <i className="bx bx-loader-alt bx-spin text-5xl text-white"></i>
@@ -56,7 +42,7 @@ const GuildsList = () => {
   return (
     <div className="mt-12 text-center">
       <h1 className="font-bold text-4xl">
-        Hello, {userData?.username}! Please select a server to get started
+        Hello, {user?.username}! Please select a server to get started
       </h1>
 
       <div className="flex justify-center items-center flex-wrap">
