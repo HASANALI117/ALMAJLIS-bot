@@ -1,10 +1,14 @@
 import GuildsList from "@/components/GuildsList";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { GuildsProvider } from "@/contexts/GuildsContext";
 
 const page = () => {
   return (
-    <div>
-      <GuildsList />
-    </div>
+    <AuthProvider>
+      <GuildsProvider>
+        <GuildsList />
+      </GuildsProvider>
+    </AuthProvider>
   );
 };
 
