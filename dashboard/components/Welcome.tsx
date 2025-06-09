@@ -1,13 +1,75 @@
 "use client";
 
-import React, { useState } from "react";
+import api from "@/utils/axios";
+import React, { useEffect, useState } from "react";
 
-const WelcomeComponent = () => {
+interface WelcomeComponentProps {
+  guildId: string;
+}
+
+const WelcomeComponent = ({ guildId }: WelcomeComponentProps) => {
   const [welcomeEnabled, setWelcomeEnabled] = useState(true);
   const [leaveEnabled, setLeaveEnabled] = useState(false);
+  const [channels, setChannels] = useState<any[]>([]);
+  const [selectedChannel, setSelectedChannel] = useState("");
   const [welcomeMessage, setWelcomeMessage] = useState(
     "Welcome to the server, {user}! Please read the rules in {channel:rules}."
   );
+  const [loading, setLoading] = useState(false);
+
+  console.log(selectedChannel, "selectedChannel");
+
+  useEffect(() => {
+    if (guildId) {
+      fetchChannels();
+      fetchWelcomeSettings();
+    }
+  }, [guildId]);
+
+  const fetchChannels = async () => {
+    try {
+      const response = await api.get(`/dashboard/guilds/${guildId}/channels`);
+      setChannels(response.data);
+      console.log("Fetched channels:", response.data);
+    } catch (error) {
+      console.error("Error fetching channels:", error);
+    }
+  };
+
+  const fetchWelcomeSettings = async () => {
+    try {
+      const response = await api.get(`/dashboard/welcome-settings/${guildId}`);
+      if (response.data) {
+        setSelectedChannel(response.data.channelId || "");
+        setWelcomeMessage(
+          response.data.message ||
+            "Welcome to the server, {user}! Please read the rules in {channel:rules}."
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching welcome settings:", error);
+    }
+  };
+
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      const response = await api.post("/dashboard/set-welcome-channel", {
+        guildId,
+        channelId: selectedChannel,
+        message: welcomeMessage,
+      });
+
+      console.log("Welcome settings saved:", response.data);
+
+      alert("Welcome settings saved successfully!");
+    } catch (error) {
+      console.error("Error saving welcome settings:", error);
+      alert("Failed to save settings. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="p-8">
@@ -61,11 +123,17 @@ const WelcomeComponent = () => {
           <label className="block text-sm font-medium text-gray-400 mb-2">
             Welcome Channel
           </label>
-          <select className="bg-gray-700 rounded-md px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-cyan-500">
-            <option>Select channel</option>
-            <option>#welcome</option>
-            <option>#general</option>
-            <option>#introductions</option>
+          <select
+            value={selectedChannel}
+            onChange={(e) => setSelectedChannel(e.target.value)}
+            className="bg-gray-700 rounded-md px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          >
+            <option value="">Select channel</option>
+            {channels.map((channel) => (
+              <option key={channel.id} value={channel.id}>
+                #{channel.name}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -220,8 +288,12 @@ const WelcomeComponent = () => {
       </div>
 
       <div className="mt-6 flex justify-end">
-        <button className="bg-cyan-500 hover:bg-cyan-600 px-6 py-2 rounded-md">
-          Save Settings
+        <button
+          onClick={handleSave}
+          disabled={loading}
+          className="bg-cyan-500 hover:bg-cyan-600 disabled:opacity-50 px-6 py-2 rounded-md"
+        >
+          {loading ? "Saving..." : "Save Settings"}
         </button>
       </div>
     </div>

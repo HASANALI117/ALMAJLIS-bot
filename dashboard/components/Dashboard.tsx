@@ -12,7 +12,11 @@ import ReactionRolesComponent from "./Reactionroles";
 import WelcomeComponent from "./Welcome";
 import Sidebar from "./Sidebar";
 
-const Dashboard = () => {
+interface DashboardProps {
+  guildId: string;
+}
+
+const Dashboard = ({ guildId }: DashboardProps) => {
   // Tracking which section is currently active
   const [activeSection, setActiveSection] = useState("bot-settings");
 
@@ -32,7 +36,7 @@ const Dashboard = () => {
       case "game-alert":
         return <GameAlertComponent />;
       case "welcome":
-        return <WelcomeComponent />;
+        return <WelcomeComponent guildId={guildId} />;
       case "reaction-roles":
         return <ReactionRolesComponent />;
       // case "moderation":
