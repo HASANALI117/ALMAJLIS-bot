@@ -1,14 +1,16 @@
 {
   "dependencies": {
+    "axios": "^1.9.0",
+    "commandkit": "^0.1.10",
     "discord.js": "^14.16.3",
     "dotenv": "^16.4.7",
+    "mongoose": "^8.15.1",
     "node-cron": "4.1.0",
     "nodemon": "^3.1.9"
   },
   "name": "bot",
   "version": "1.0.0",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js"
