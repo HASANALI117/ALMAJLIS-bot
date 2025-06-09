@@ -5,8 +5,6 @@ import User from "../models/User.js";
 // This function initiates the OAuth2 authentication flow with Discord
 export const authenticate = (req, res) => {
   const DISCORD_OAUTH_URL = process.env.DISCORD_OAUTH_URL;
-
-  console.log(DISCORD_OAUTH_URL);
   res.redirect(`${DISCORD_OAUTH_URL}`);
 };
 
