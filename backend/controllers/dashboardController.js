@@ -19,6 +19,7 @@ export const getDashboardData = async (req, res) => {
   }
 };
 
+// This function retrieves the list of guilds (servers) the user is a member of,
 export const getGuilds = async (req, res) => {
   const DISCORD_API_ENDPOINT = process.env.DISCORD_API_ENDPOINT;
   const MANAGE_GUILD_BIT = 1 << 5; // 0x20 (MANAGE_GUILD permission)
@@ -41,6 +42,37 @@ export const getGuilds = async (req, res) => {
     res.json(filteredGuilds);
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+// This function retrieves the channels of a specific guild (server) from Discord's API.
+export const getGuildChannels = async (req, res) => {
+  const DISCORD_API_ENDPOINT = process.env.DISCORD_API_ENDPOINT;
+
+  try {
+    const { guildId } = req.params;
+
+    if (!req.user) {
+      return res.status(401).json({ error: "User not logged in" });
+    }
+
+    // Get bot token from environment
+    const botToken = process.env.TOKEN;
+
+    const channelsResponse = await axios.get(
+      `${DISCORD_API_ENDPOINT}/guilds/${guildId}/channels`,
+      { headers: { Authorization: `Bot ${botToken}` } }
+    );
+
+    // Filter for text and announcement channels only
+    const textChannels = channelsResponse.data.filter(
+      (channel) => [0, 5].includes(channel.type) // 0 = GUILD_TEXT, 5 = GUILD_ANNOUNCEMENT
+    );
+
+    res.json(textChannels);
+  } catch (error) {
+    console.error("Error fetching guild channels:", error.message);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
