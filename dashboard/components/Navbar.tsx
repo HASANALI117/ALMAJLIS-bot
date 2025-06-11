@@ -38,20 +38,17 @@ const Navbar = () => {
         <div>
           {loading ? null : user ? (
             <div className="flex justify-center items-center">
-              <img
+              <Image
                 src={`https://cdn.discordapp.com/avatars/${user.userID}/${user.avatar}.png`}
                 alt="User Avatar"
                 className="h-10 w-10 rounded-full"
-              />
+                width={40}
+                height={40}
+              ></Image>
               <h1 className="text-xl pl-4">{user.username}</h1>
             </div>
           ) : (
-            <a
-              href="http://localhost:8080/auth/signin"
-              className="rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-            >
-              Sign In
-            </a>
+            ""
           )}
         </div>
       </div>

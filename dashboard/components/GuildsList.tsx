@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-// import Image from "next/image";
+import Image from "next/image";
 import axios from "axios";
 import { useAuth } from "@/contexts/index";
 import { useGuilds } from "@/contexts/index";
@@ -48,26 +48,20 @@ const GuildsList = () => {
       <div className="flex justify-center items-center flex-wrap">
         {guilds.map((guild) => (
           <Link
-            href={`/guilds/${guild.id}`}
+            href={`/dashboard/${guild.id}`}
             className="cursor-pointer w-80 m-8 bg-gray-600 rounded-lg  p-8 hover:bg-gray-500 transition"
             key={guild.id}
             onClick={() => handleInvite(guild.id)}
           >
             <h1 className="font-bold text-2xl truncate">{guild.name}</h1>
 
-            {/* <Image
-              src={`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.webp?size=256`}
+            <Image
+              src={`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`}
               alt={guild.name}
               width={100}
               height={100}
-              className="rounded-full mx-auto my-4 border-green-500 border-[3px]"
-            ></Image> */}
-
-            <img
-              src={`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.webp?size=256`}
-              alt={guild.name}
               className="rounded-full mx-auto my-4 border-green-500 border-[3px] h-28 w-28"
-            />
+            ></Image>
           </Link>
         ))}
       </div>
