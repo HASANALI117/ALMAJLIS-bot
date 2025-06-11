@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import session from "express-session";
 import passport from "passport";
+import MongoStore from "connect-mongo";
 import routes from "../routes";
 import "../config/passport";
 
@@ -24,8 +25,13 @@ export const createApp = (): Express => {
       cookie: {
         //   secure: process.env.NODE_ENV === "production", // Use secure cookies in production
         //   httpOnly: true, // Prevent client-side JavaScript from accessing the cookie
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 1 day
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
       },
+      store: MongoStore.create({
+        mongoUrl: `${process.env.MONGODB_URI}`,
+        collectionName: "sessions",
+        ttl: 7 * 24 * 60 * 60, // 7 days in seconds
+      }),
     })
   );
 
