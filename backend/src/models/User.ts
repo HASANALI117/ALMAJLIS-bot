@@ -1,6 +1,7 @@
 import { Schema, SchemaTypes, model } from "mongoose";
 
-interface User {
+export interface User {
+  id: string;
   discordId: string;
   accessToken: string;
   refreshToken: string;
