@@ -1,12 +1,16 @@
-import { Schema, model } from "mongoose";
+import { Schema, SchemaTypes, model } from "mongoose";
 
-const userSchema = new Schema(
+interface User {
+  discordId: string;
+  accessToken: string;
+  refreshToken: string;
+}
+
+const userSchema = new Schema<User>(
   {
-    userID: { type: String, required: true, unique: true },
-    username: { type: String, required: true },
-    avatarHash: { type: String, default: null },
-    accessToken: { type: String, required: true },
-    refreshToken: { type: String, required: true },
+    discordId: { type: SchemaTypes.String, required: true, unique: true },
+    accessToken: { type: SchemaTypes.String, required: true },
+    refreshToken: { type: SchemaTypes.String, required: true },
   },
   { timestamps: true }
 );
