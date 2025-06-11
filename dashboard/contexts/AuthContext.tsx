@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error: any | unknown) {
       if (error.response && error.response.status === 401) {
         // Redirect to Discord signin page
-        window.location.href = "http://localhost:8080/auth/signin";
+        window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/discord`;
         return;
       }
       console.error("Failed to fetch user:", error.message);

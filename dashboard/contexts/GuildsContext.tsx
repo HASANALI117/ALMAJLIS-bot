@@ -34,7 +34,7 @@ export const GuildsProvider = ({ children }: { children: ReactNode }) => {
   const fetchGuilds = async () => {
     setLoading(true);
     try {
-      const res = await api.get("/dashboard/guilds", { withCredentials: true });
+      const res = await api.get("/guilds", { withCredentials: true });
       setGuilds(res.data);
     } catch (error: any | unknown) {
       setGuilds([]);

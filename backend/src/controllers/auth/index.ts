@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 
 export const handleDiscordRedirect = (req: Request, res: Response) => {
-  res.send("Redirecting to Discord for authentication...");
+  console.log("Redirecting to Discord for authentication...");
 };
 
 export const handleDiscordCallback = (req: Request, res: Response) => {
-  res.send("Authentication successful! You can close this window.");
+  console.log("Authentication successful! You can close this window.");
+  res.redirect(`${process.env.FRONTEND_URL}/guilds`);
 };
