@@ -4,11 +4,11 @@ import {
   getGuilds,
   inviteBot,
   getGuildChannels,
-} from "../controllers/dashboardController.js";
+} from "../../controllers/dashboardController.js";
 import {
   getWelcomeSettings,
   setWelcomeChannel,
-} from "../controllers/welcomeController.js";
+} from "../../controllers/welcomeController.js";
 
 const router = express.Router();
 
