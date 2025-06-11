@@ -4,6 +4,7 @@ import cors from "cors";
 import session from "express-session";
 import passport from "passport";
 import routes from "../routes";
+import "../config/passport";
 
 export const createApp = (): Express => {
   const app = express();
