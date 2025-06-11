@@ -1,13 +1,13 @@
 import { Router } from "express";
-import authRoute from "./auth";
-import dashboardRoute from "./dashboard";
-import messageRoute from "./message";
+import authRouter from "./auth";
+import dashboardRouter from "./dashboard";
+import messageRouter from "./message";
 import { authenticateToken } from "../middlewares/authMiddleware";
 
 const router = Router();
 
-router.use("/auth", authRoute);
-router.use("/message", authenticateToken, dashboardRoute);
-router.use("/dashboard", authenticateToken, messageRoute);
+router.use("/auth", authRouter);
+router.use("/message", authenticateToken, dashboardRouter);
+router.use("/dashboard", authenticateToken, messageRouter);
 
 export default router;
