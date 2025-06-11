@@ -22,3 +22,18 @@ export const getUserGuildsService = async (id: string) => {
     },
   });
 };
+
+export const getMutualGuildsService = async (id: string) => {
+  const { data: botGuilds } = await getBotGuildsService();
+  const { data: userGuilds } = await getUserGuildsService(id);
+
+  const adminUserGuilds = userGuilds.filter(
+    (guild) => (parseInt(guild.permissions) & 0x8) === 0x8 // Check if the user has the ADMINISTRATOR permission
+  );
+  // Find mutual guilds where user has admin permissions
+  const mutualAdminGuilds = adminUserGuilds.filter((userGuild) =>
+    botGuilds.some((botGuild) => botGuild.id === userGuild.id)
+  );
+
+  return mutualAdminGuilds;
+};
