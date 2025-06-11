@@ -1,10 +1,18 @@
 import { Router } from "express";
-import { authenticate, callback } from "../../controllers/authController.js";
+import passport from "passport";
+import {
+  handleDiscordCallback,
+  handleDiscordRedirect,
+} from "../../controllers/auth/index.js";
 
 const router = Router();
 
-router.get("/signin", authenticate);
+router.get("/discord", passport.authenticate("discord"), handleDiscordRedirect);
 
-router.get("/discord/callback", callback);
+router.get(
+  "/discord/callback",
+  passport.authenticate("discord"),
+  handleDiscordCallback
+);
 
 export default router;
