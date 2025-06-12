@@ -1,200 +1,303 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 
-const GameAlertComponent = () => {
-  const [alertsEnabled, setAlertsEnabled] = useState(true);
-  const [games, setGames] = useState([
-    { name: "Minecraft", enabled: true },
-    { name: "Valorant", enabled: true },
-    { name: "League of Legends", enabled: false },
-    { name: "Among Us", enabled: true },
-  ]);
+const GamealertsComponent = () => {
+  const [gameAlerts, setGameAlerts] = useState(true);
+  const [selectedChannel, setSelectedChannel] = useState("");
+  const [alertTypes, setAlertTypes] = useState({
+    newGame: true,
+    gameUpdate: false,
+    freeGames: true,
+    releases: true,
+    sales: false,
+  });
 
-  const toggleGame = (index: number) => {
-    const updatedGames = [...games];
-    updatedGames[index].enabled = !updatedGames[index].enabled;
-    setGames(updatedGames);
+  const channels = [
+    { id: "123456789", name: "game-alerts" },
+    { id: "987654321", name: "announcements" },
+    { id: "456789123", name: "gaming" },
+  ];
+
+  const toggleAlertType = (type: keyof typeof alertTypes) => {
+    setAlertTypes((prev) => ({ ...prev, [type]: !prev[type] }));
   };
 
   return (
-    <div className="p-8">
-      <div className="flex items-center mb-6">
-        <h2 className="text-xl font-semibold flex items-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5 mr-2"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          Game Alert
-          <span className="ml-2 text-xs px-1.5 py-0.5 bg-blue-500 rounded">
-            NEW
-          </span>
-        </h2>
-      </div>
-
-      <div className="bg-gray-800 rounded-md p-6 mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium">Game Alerts</h3>
-          <div className="relative inline-block w-12 mr-2 align-middle select-none">
-            <input
-              type="checkbox"
-              id="toggle-alerts"
-              checked={alertsEnabled}
-              onChange={() => setAlertsEnabled(!alertsEnabled)}
-              className="sr-only"
-            />
-            <label
-              htmlFor="toggle-alerts"
-              className={`block overflow-hidden h-6 rounded-full cursor-pointer transition-colors duration-200 ease-in ${
-                alertsEnabled ? "bg-cyan-500" : "bg-gray-600"
-              }`}
-            >
-              <span
-                className={`block h-6 w-6 rounded-full bg-white shadow transform transition-transform duration-200 ease-in ${
-                  alertsEnabled ? "translate-x-6" : "translate-x-0"
-                }`}
-              ></span>
-            </label>
-          </div>
-        </div>
-
-        <p className="text-gray-400 text-sm mb-4">
-          Send automatic notifications when members start playing games.
-        </p>
-
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-400 mb-2">
-            Alert Channel
-          </label>
-          <select className="bg-gray-700 rounded-md px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-cyan-500">
-            <option>Select channel</option>
-            <option>#gaming</option>
-            <option>#general</option>
-            <option>#looking-to-play</option>
-          </select>
-        </div>
-
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-400 mb-2">
-            Alert Format
-          </label>
-          <textarea
-            className="bg-gray-700 rounded-md px-4 py-2 w-full h-24 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-            defaultValue="{username} just started playing {game}! Who wants to join?"
-          ></textarea>
-          <p className="text-xs text-gray-400 mt-2">
-            Available variables: {"{username}"}, {"{game}"}, {"{time}"}
-          </p>
-        </div>
-
-        <div className="mb-4">
-          <div className="flex items-center justify-between">
-            <label className="block text-sm font-medium text-gray-400">
-              Minimum Group Size
-            </label>
-            <span className="text-sm text-gray-400">Requires 2 players</span>
-          </div>
-          <input
-            type="range"
-            min="1"
-            max="5"
-            defaultValue="2"
-            className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer mt-2"
-          />
-          <div className="flex justify-between text-xs text-gray-400 mt-1">
-            <span>1</span>
-            <span>2</span>
-            <span>3</span>
-            <span>4</span>
-            <span>5+</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-gray-800 rounded-md p-6">
-        <h3 className="text-lg font-medium mb-4">Monitored Games</h3>
-
-        <div className="mb-4">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Add a new game..."
-              className="bg-gray-700 rounded-md px-4 py-2 pr-8 w-full focus:outline-none focus:ring-2 focus:ring-cyan-500"
-            />
-            <button className="absolute right-2 top-2 text-cyan-500 hover:text-cyan-400">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          {games.map((game, index) => (
-            <div
-              key={index}
-              className="flex justify-between items-center bg-gray-700 rounded p-3"
-            >
-              <span>{game.name}</span>
-              <div className="relative inline-block w-10 align-middle select-none">
-                <input
-                  type="checkbox"
-                  id={`toggle-game-${index}`}
-                  checked={game.enabled}
-                  onChange={() => toggleGame(index)}
-                  className="sr-only"
-                />
-                <label
-                  htmlFor={`toggle-game-${index}`}
-                  className={`block overflow-hidden h-5 rounded-full cursor-pointer transition-colors duration-200 ease-in ${
-                    game.enabled ? "bg-cyan-500" : "bg-gray-600"
-                  }`}
-                >
-                  <span
-                    className={`block h-5 w-5 rounded-full bg-white shadow transform transition-transform duration-200 ease-in ${
-                      game.enabled ? "translate-x-5" : "translate-x-0"
-                    }`}
-                  ></span>
-                </label>
+    <div className="space-y-6">
+      {gameAlerts && (
+        <>
+          {/* Channel Selection */}
+          <div className="glass-card p-6">
+            <div className="flex items-center mb-4">
+              <div className="glass-button p-2 rounded-full mr-3">
+                <i className="bx bx-hash text-blue-400"></i>
+              </div>
+              <div>
+                <h4 className="text-lg font-semibold text-white">
+                  Alert Channel
+                </h4>
+                <p className="text-sm text-white/60">
+                  Select channel for game alerts
+                </p>
               </div>
             </div>
-          ))}
-        </div>
 
-        <div className="mt-6 flex justify-end">
-          <button className="bg-cyan-500 hover:bg-cyan-600 px-6 py-2 rounded-md">
-            Save Settings
-          </button>
-        </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-white/80 mb-2">
+                  Notification Channel
+                </label>
+                <select
+                  value={selectedChannel}
+                  onChange={(e) => setSelectedChannel(e.target.value)}
+                  className="w-full glass-button px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300"
+                >
+                  <option value="">Select a channel...</option>
+                  {channels.map((channel) => (
+                    <option key={channel.id} value={channel.id}>
+                      #{channel.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex items-end">
+                <button className="glass-button px-6 py-3 text-white hover:text-blue-400 font-medium transition-all duration-300 group">
+                  <i className="bx bx-test-tube mr-2 group-hover:scale-110 transition-transform duration-300"></i>
+                  Test Alert
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Alert Types */}
+          <div className="glass-card p-6">
+            <div className="flex items-center mb-4">
+              <div className="glass-button p-2 rounded-full mr-3">
+                <i className="bx bx-bell text-yellow-400"></i>
+              </div>
+              <div>
+                <h4 className="text-lg font-semibold text-white">
+                  Alert Types
+                </h4>
+                <p className="text-sm text-white/60">
+                  Choose what game alerts to receive
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[
+                {
+                  key: "newGame",
+                  icon: "bx-joystick",
+                  label: "New Game Releases",
+                  description: "Latest game releases and announcements",
+                  color: "text-green-400",
+                },
+                {
+                  key: "gameUpdate",
+                  icon: "bx-refresh",
+                  label: "Game Updates",
+                  description: "Major game updates and patches",
+                  color: "text-blue-400",
+                },
+                {
+                  key: "freeGames",
+                  icon: "bx-gift",
+                  label: "Free Games",
+                  description: "Free game giveaways and promotions",
+                  color: "text-purple-400",
+                },
+                {
+                  key: "releases",
+                  icon: "bx-calendar",
+                  label: "Upcoming Releases",
+                  description: "Games releasing soon",
+                  color: "text-orange-400",
+                },
+                {
+                  key: "sales",
+                  icon: "bx-purchase-tag",
+                  label: "Game Sales",
+                  description: "Sales and discounts on games",
+                  color: "text-red-400",
+                },
+              ].map((alert) => (
+                <div
+                  key={alert.key}
+                  className="glass-button p-4 hover:bg-white/10 transition-all duration-300"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center">
+                      <i
+                        className={`bx ${alert.icon} ${alert.color} mr-3 text-xl`}
+                      ></i>
+                      <span className="text-white font-medium">
+                        {alert.label}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() =>
+                        toggleAlertType(alert.key as keyof typeof alertTypes)
+                      }
+                      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors duration-300 ${
+                        alertTypes[alert.key as keyof typeof alertTypes]
+                          ? "bg-green-500"
+                          : "bg-gray-600"
+                      }`}
+                    >
+                      <span
+                        className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform duration-300 ${
+                          alertTypes[alert.key as keyof typeof alertTypes]
+                            ? "translate-x-5"
+                            : "translate-x-1"
+                        }`}
+                      />
+                    </button>
+                  </div>
+                  <p className="text-sm text-white/60 ml-8">
+                    {alert.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Popular Games */}
+          <div className="glass-card p-6">
+            <div className="flex items-center mb-4">
+              <div className="glass-button p-2 rounded-full mr-3">
+                <i className="bx bx-trending-up text-pink-400"></i>
+              </div>
+              <div>
+                <h4 className="text-lg font-semibold text-white">
+                  Popular Games
+                </h4>
+                <p className="text-sm text-white/60">
+                  Track specific games for updates
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[
+                { name: "Valorant", icon: "🎯", players: "1.2M" },
+                { name: "League of Legends", icon: "⚔️", players: "2.1M" },
+                { name: "CS2", icon: "💣", players: "950K" },
+                { name: "Apex Legends", icon: "🎮", players: "800K" },
+                { name: "Fortnite", icon: "🌪️", players: "3.2M" },
+                { name: "Minecraft", icon: "🧱", players: "1.8M" },
+              ].map((game, index) => (
+                <div
+                  key={index}
+                  className="glass-button p-4 text-center hover:bg-white/10 transition-all duration-300 group"
+                >
+                  <div className="text-2xl mb-2">{game.icon}</div>
+                  <h5 className="text-white font-medium mb-1">{game.name}</h5>
+                  <p className="text-sm text-white/60">{game.players} active</p>
+                  <button className="mt-2 text-xs px-3 py-1 glass-dark rounded-full text-white/80 hover:text-green-400 transition-colors duration-300 opacity-0 group-hover:opacity-100">
+                    Track Updates
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Alert Settings */}
+          <div className="glass-card p-6">
+            <div className="flex items-center mb-4">
+              <div className="glass-button p-2 rounded-full mr-3">
+                <i className="bx bx-cog text-gray-400"></i>
+              </div>
+              <div>
+                <h4 className="text-lg font-semibold text-white">
+                  Alert Settings
+                </h4>
+                <p className="text-sm text-white/60">
+                  Customize alert frequency and format
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-white/80 mb-2">
+                  Alert Frequency
+                </label>
+                <select className="w-full glass-button px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-gray-500/50 transition-all duration-300">
+                  <option>Instant</option>
+                  <option>Every 30 minutes</option>
+                  <option>Hourly</option>
+                  <option>Daily summary</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-white/80 mb-2">
+                  Mention Role
+                </label>
+                <select className="w-full glass-button px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-gray-500/50 transition-all duration-300">
+                  <option>@everyone</option>
+                  <option>@here</option>
+                  <option>@gamers</option>
+                  <option>No mentions</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="mt-4 space-y-3">
+              {[
+                "Include game thumbnails",
+                "Show release dates",
+                "Include pricing information",
+                "Add direct store links",
+              ].map((option, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between glass-button p-3"
+                >
+                  <span className="text-white/80">{option}</span>
+                  <button className="relative inline-flex h-5 w-9 items-center rounded-full bg-green-500 transition-colors duration-300">
+                    <span className="inline-block h-3 w-3 transform translate-x-5 rounded-full bg-white transition-transform duration-300" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Statistics */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="glass-card p-4 text-center">
+              <div className="text-2xl font-bold text-green-400 mb-1">
+                {Object.values(alertTypes).filter(Boolean).length}
+              </div>
+              <div className="text-sm text-white/60">Active Alerts</div>
+            </div>
+            <div className="glass-card p-4 text-center">
+              <div className="text-2xl font-bold text-blue-400 mb-1">47</div>
+              <div className="text-sm text-white/60">Games Tracked</div>
+            </div>
+            <div className="glass-card p-4 text-center">
+              <div className="text-2xl font-bold text-purple-400 mb-1">12</div>
+              <div className="text-sm text-white/60">Alerts Today</div>
+            </div>
+            <div className="glass-card p-4 text-center">
+              <div className="text-2xl font-bold text-orange-400 mb-1">3</div>
+              <div className="text-sm text-white/60">Free Games</div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Save Button */}
+      <div className="flex justify-end">
+        <button className="glass-button px-8 py-3 text-white hover:text-green-400 font-semibold transition-all duration-300 group">
+          <i className="bx bx-save mr-2 group-hover:scale-110 transition-transform duration-300"></i>
+          Save Settings
+        </button>
       </div>
     </div>
   );
 };
-export default GameAlertComponent;
+
+export default GamealertsComponent;
