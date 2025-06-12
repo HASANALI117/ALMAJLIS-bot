@@ -1,302 +1,347 @@
 "use client";
 
-import api from "@/utils/axios";
-import React, { useEffect, useState } from "react";
+import Image from "next/image";
+import { useState } from "react";
 
-interface WelcomeComponentProps {
-  guildId: string;
-}
-
-const WelcomeComponent = ({ guildId }: WelcomeComponentProps) => {
+const WelcomeComponent = () => {
   const [welcomeEnabled, setWelcomeEnabled] = useState(true);
-  const [leaveEnabled, setLeaveEnabled] = useState(false);
-  const [channels, setChannels] = useState<any[]>([]);
-  const [selectedChannel, setSelectedChannel] = useState("");
+  const [goodbyeEnabled, setGoodbyeEnabled] = useState(false);
+  const [selectedWelcomeChannel, setSelectedWelcomeChannel] = useState("");
+  const [selectedGoodbyeChannel, setSelectedGoodbyeChannel] = useState("");
   const [welcomeMessage, setWelcomeMessage] = useState(
-    "Welcome to the server, {user}! Please read the rules in {channel:rules}."
+    "Welcome to {server}, {user}! 🎉"
   );
-  const [loading, setLoading] = useState(false);
+  const [goodbyeMessage, setGoodbyeMessage] = useState(
+    "Goodbye {user}, we'll miss you! 👋"
+  );
 
-  console.log(selectedChannel, "selectedChannel");
+  const channels = [
+    { id: "123456789", name: "welcome" },
+    { id: "987654321", name: "general" },
+    { id: "456789123", name: "lobby" },
+  ];
 
-  useEffect(() => {
-    if (guildId) {
-      fetchChannels();
-      fetchWelcomeSettings();
-    }
-  }, [guildId]);
-
-  const fetchChannels = async () => {
-    try {
-      const response = await api.get(`/dashboard/guilds/${guildId}/channels`);
-      setChannels(response.data);
-      console.log("Fetched channels:", response.data);
-    } catch (error) {
-      console.error("Error fetching channels:", error);
-    }
-  };
-
-  const fetchWelcomeSettings = async () => {
-    try {
-      const response = await api.get(`/dashboard/welcome-settings/${guildId}`);
-      if (response.data) {
-        setSelectedChannel(response.data.channelId || "");
-        setWelcomeMessage(
-          response.data.message ||
-            "Welcome to the server, {user}! Please read the rules in {channel:rules}."
-        );
-      }
-    } catch (error) {
-      console.error("Error fetching welcome settings:", error);
-    }
-  };
-
-  const handleSave = async () => {
-    setLoading(true);
-    try {
-      const response = await api.post("/dashboard/set-welcome-channel", {
-        guildId,
-        channelId: selectedChannel,
-        message: welcomeMessage,
-      });
-
-      console.log("Welcome settings saved:", response.data);
-
-      alert("Welcome settings saved successfully!");
-    } catch (error) {
-      console.error("Error saving welcome settings:", error);
-      alert("Failed to save settings. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const placeholders = [
+    { placeholder: "{user}", description: "Mention the user" },
+    { placeholder: "{server}", description: "Server name" },
+    { placeholder: "{membercount}", description: "Total member count" },
+    { placeholder: "{username}", description: "Username without mention" },
+  ];
 
   return (
-    <div className="p-8">
-      <div className="flex items-center mb-6">
-        <h2 className="text-xl font-semibold flex items-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5 mr-2"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+    <div className="space-y-6">
+      {/* Welcome Messages */}
+      <div className="glass-card p-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center">
+            <div className="glass-button p-2 rounded-full mr-3">
+              <i className="bx bx-user-plus text-green-400"></i>
+            </div>
+            <div>
+              <h4 className="text-lg font-semibold text-white">
+                Welcome Messages
+              </h4>
+              <p className="text-sm text-white/60">
+                Greet new members when they join
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => setWelcomeEnabled(!welcomeEnabled)}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 ${
+              welcomeEnabled ? "bg-green-500" : "bg-gray-600"
+            }`}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11"
-            />
-          </svg>
-          Welcome
-        </h2>
-      </div>
-
-      <div className="bg-gray-800 rounded-md p-6 mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium">Welcome Messages</h3>
-          <div className="relative inline-block w-12 mr-2 align-middle select-none">
-            <input
-              type="checkbox"
-              id="toggle-welcome"
-              checked={welcomeEnabled}
-              onChange={() => setWelcomeEnabled(!welcomeEnabled)}
-              className="sr-only"
-            />
-            <label
-              htmlFor="toggle-welcome"
-              className={`block overflow-hidden h-6 rounded-full cursor-pointer transition-colors duration-200 ease-in ${
-                welcomeEnabled ? "bg-cyan-500" : "bg-gray-600"
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${
+                welcomeEnabled ? "translate-x-6" : "translate-x-1"
               }`}
-            >
-              <span
-                className={`block h-6 w-6 rounded-full bg-white shadow transform transition-transform duration-200 ease-in ${
-                  welcomeEnabled ? "translate-x-6" : "translate-x-0"
-                }`}
-              ></span>
-            </label>
-          </div>
+            />
+          </button>
         </div>
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-400 mb-2">
-            Welcome Channel
-          </label>
-          <select
-            value={selectedChannel}
-            onChange={(e) => setSelectedChannel(e.target.value)}
-            className="bg-gray-700 rounded-md px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-cyan-500"
+        {welcomeEnabled && (
+          <div className="space-y-4 p-4 glass-dark rounded-lg">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-white/80 mb-2">
+                  Welcome Channel
+                </label>
+                <select
+                  value={selectedWelcomeChannel}
+                  onChange={(e) => setSelectedWelcomeChannel(e.target.value)}
+                  className="w-full glass-button px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all duration-300"
+                >
+                  <option value="">Select a channel...</option>
+                  {channels.map((channel) => (
+                    <option key={channel.id} value={channel.id}>
+                      #{channel.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex items-end">
+                <button className="glass-button px-6 py-3 text-white hover:text-green-400 font-medium transition-all duration-300 group">
+                  <i className="bx bx-test-tube mr-2 group-hover:scale-110 transition-transform duration-300"></i>
+                  Test Message
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-white/80 mb-2">
+                Welcome Message
+              </label>
+              <textarea
+                value={welcomeMessage}
+                onChange={(e) => setWelcomeMessage(e.target.value)}
+                className="w-full glass-button px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all duration-300 h-24"
+                placeholder="Enter your welcome message..."
+              />
+            </div>
+
+            {/* Message Preview */}
+            <div className="glass-button p-4 border border-green-500/30">
+              <h5 className="text-sm font-medium text-white/80 mb-2">
+                Preview:
+              </h5>
+              <div className="bg-discord-dark p-3 rounded">
+                <div className="flex items-center mb-2">
+                  {/* <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-2">
+                    <i className="bx bx-bot text-white text-sm"></i>
+                  </div> */}
+                  <Image
+                    src={"/js.jpg"}
+                    alt="Bot Avatar"
+                    width={32}
+                    height={32}
+                    className="rounded-full mr-2"
+                  ></Image>
+                  <span className="text-white font-medium">ALMAJLIS-BOT</span>
+                  <span className="text-xs text-gray-400 ml-2">
+                    Today at 12:00 PM
+                  </span>
+                </div>
+                <p className="text-white">
+                  {welcomeMessage
+                    .replace("{user}", "@NewUser")
+                    .replace("{server}", "Your Server")
+                    .replace("{membercount}", "1,234")
+                    .replace("{username}", "NewUser")}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Goodbye Messages */}
+      <div className="glass-card p-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center">
+            <div className="glass-button p-2 rounded-full mr-3">
+              <i className="bx bx-user-minus text-orange-400"></i>
+            </div>
+            <div>
+              <h4 className="text-lg font-semibold text-white">
+                Goodbye Messages
+              </h4>
+              <p className="text-sm text-white/60">
+                Say farewell to members who leave
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => setGoodbyeEnabled(!goodbyeEnabled)}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 ${
+              goodbyeEnabled ? "bg-green-500" : "bg-gray-600"
+            }`}
           >
-            <option value="">Select channel</option>
-            {channels.map((channel) => (
-              <option key={channel.id} value={channel.id}>
-                #{channel.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-400 mb-2">
-            Welcome Message
-          </label>
-          <textarea
-            className="bg-gray-700 rounded-md px-4 py-2 w-full h-32 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-            placeholder="Enter welcome message here..."
-            value={welcomeMessage}
-            onChange={(e) => setWelcomeMessage(e.target.value)}
-          ></textarea>
-          <p className="text-xs text-gray-400 mt-2">
-            Available variables: {"{user}"} (mentions the user), {"{username}"}{" "}
-            (user&apos;s name), {"{server}"} (server name), {"{membercount}"}{" "}
-            (member count), {"{channel:name}"} (channel mention)
-          </p>
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-400 mb-2">
-            Message Style
-          </label>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-gray-700 rounded-md p-4 border-2 border-cyan-500">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium">Basic</span>
-                <input
-                  type="radio"
-                  name="style"
-                  defaultChecked
-                  className="text-cyan-500 focus:ring-cyan-500 focus:ring-offset-gray-800"
-                />
-              </div>
-              <div className="bg-gray-800 rounded p-2 text-xs">
-                Welcome to the server, @user!
-              </div>
-            </div>
-            <div className="bg-gray-700 rounded-md p-4">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium">Embed</span>
-                <input
-                  type="radio"
-                  name="style"
-                  className="text-cyan-500 focus:ring-cyan-500 focus:ring-offset-gray-800"
-                />
-              </div>
-              <div className="bg-gray-800 border-l-4 border-cyan-500 rounded p-2 text-xs">
-                Welcome to the server, @user!
-              </div>
-            </div>
-            <div className="bg-gray-700 rounded-md p-4">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium">Image</span>
-                <span className="text-xs text-cyan-400">Premium</span>
-              </div>
-              <div className="bg-gray-800 rounded p-2 text-xs text-center opacity-75">
-                Custom welcome image
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-gray-800 rounded-md p-6 mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium">Leave Messages</h3>
-          <div className="relative inline-block w-12 mr-2 align-middle select-none">
-            <input
-              type="checkbox"
-              id="toggle-leave"
-              checked={leaveEnabled}
-              onChange={() => setLeaveEnabled(!leaveEnabled)}
-              className="sr-only"
-            />
-            <label
-              htmlFor="toggle-leave"
-              className={`block overflow-hidden h-6 rounded-full cursor-pointer transition-colors duration-200 ease-in ${
-                leaveEnabled ? "bg-cyan-500" : "bg-gray-600"
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${
+                goodbyeEnabled ? "translate-x-6" : "translate-x-1"
               }`}
-            >
-              <span
-                className={`block h-6 w-6 rounded-full bg-white shadow transform transition-transform duration-200 ease-in ${
-                  leaveEnabled ? "translate-x-6" : "translate-x-0"
-                }`}
-              ></span>
-            </label>
+            />
+          </button>
+        </div>
+
+        {goodbyeEnabled && (
+          <div className="space-y-4 p-4 glass-dark rounded-lg">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-white/80 mb-2">
+                  Goodbye Channel
+                </label>
+                <select
+                  value={selectedGoodbyeChannel}
+                  onChange={(e) => setSelectedGoodbyeChannel(e.target.value)}
+                  className="w-full glass-button px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300"
+                >
+                  <option value="">Select a channel...</option>
+                  {channels.map((channel) => (
+                    <option key={channel.id} value={channel.id}>
+                      #{channel.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex items-end">
+                <button className="glass-button px-6 py-3 text-white hover:text-orange-400 font-medium transition-all duration-300 group">
+                  <i className="bx bx-test-tube mr-2 group-hover:scale-110 transition-transform duration-300"></i>
+                  Test Message
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-white/80 mb-2">
+                Goodbye Message
+              </label>
+              <textarea
+                value={goodbyeMessage}
+                onChange={(e) => setGoodbyeMessage(e.target.value)}
+                className="w-full glass-button px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300 h-24"
+                placeholder="Enter your goodbye message..."
+              />
+            </div>
+
+            {/* Message Preview */}
+            <div className="glass-button p-4 border border-orange-500/30">
+              <h5 className="text-sm font-medium text-white/80 mb-2">
+                Preview:
+              </h5>
+              <div className="bg-discord-dark p-3 rounded">
+                <div className="flex items-center mb-2">
+                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-2">
+                    <i className="bx bx-bot text-white text-sm"></i>
+                  </div>
+                  <span className="text-white font-medium">ALMAJLIS-BOT</span>
+                  <span className="text-xs text-gray-400 ml-2">
+                    Today at 12:00 PM
+                  </span>
+                </div>
+                <p className="text-white">
+                  {goodbyeMessage
+                    .replace("{user}", "LeftUser")
+                    .replace("{server}", "Your Server")
+                    .replace("{membercount}", "1,233")
+                    .replace("{username}", "LeftUser")}
+                </p>
+              </div>
+            </div>
           </div>
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-400 mb-2">
-            Leave Channel
-          </label>
-          <select className="bg-gray-700 rounded-md px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-cyan-500">
-            <option>Same as welcome channel</option>
-            <option>#general</option>
-            <option>#mod-logs</option>
-          </select>
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-400 mb-2">
-            Leave Message
-          </label>
-          <textarea
-            className="bg-gray-700 rounded-md px-4 py-2 w-full h-32 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-            placeholder="Enter leave message here..."
-            defaultValue="{username} has left the server. We now have {membercount} members."
-          ></textarea>
-          <p className="text-xs text-gray-400 mt-2">
-            Available variables: {"{username}"} (user&apos;s name), {"{server}"}{" "}
-            (server name), {"{membercount}"} (member count)
-          </p>
-        </div>
+        )}
       </div>
 
-      <div className="bg-gray-800 rounded-md p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium">Join Roles</h3>
-          <span className="text-xs text-cyan-400">Premium feature</span>
-        </div>
-
-        <p className="text-gray-400 text-sm mb-4">
-          Automatically assign roles to new members when they join the server.
-        </p>
-
-        <div className="opacity-60">
-          <div className="flex mb-4">
-            <select
-              disabled
-              className="bg-gray-700 rounded-md px-4 py-2 w-full focus:outline-none"
-            >
-              <option>Select role to add</option>
-              <option>Member</option>
-              <option>Newcomer</option>
-              <option>Verified</option>
-            </select>
-            <button disabled className="bg-gray-700 px-4 py-2 rounded-md ml-2">
-              Add
-            </button>
+      {/* Message Placeholders */}
+      <div className="glass-card p-6">
+        <div className="flex items-center mb-4">
+          <div className="glass-button p-2 rounded-full mr-3">
+            <i className="bx bx-code text-blue-400"></i>
           </div>
-
-          <div className="text-center py-6 border-2 border-dashed border-gray-700 rounded-md">
-            <p className="text-sm text-gray-400">No auto roles configured</p>
-            <p className="text-xs text-gray-500 mt-1">
-              Upgrade to Premium to use this feature
+          <div>
+            <h4 className="text-lg font-semibold text-white">
+              Message Placeholders
+            </h4>
+            <p className="text-sm text-white/60">
+              Use these placeholders in your messages
             </p>
           </div>
         </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {placeholders.map((item, index) => (
+            <div
+              key={index}
+              className="glass-button p-4 flex items-center justify-between hover:bg-white/10 transition-all duration-300 group"
+            >
+              <div>
+                <code className="text-blue-400 font-mono text-sm bg-black/30 px-2 py-1 rounded">
+                  {item.placeholder}
+                </code>
+                <p className="text-white/60 text-sm mt-1">{item.description}</p>
+              </div>
+              <button
+                onClick={() => navigator.clipboard.writeText(item.placeholder)}
+                className="glass-button p-2 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:text-blue-400"
+              >
+                <i className="bx bx-copy"></i>
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div className="mt-6 flex justify-end">
-        <button
-          onClick={handleSave}
-          disabled={loading}
-          className="bg-cyan-500 hover:bg-cyan-600 disabled:opacity-50 px-6 py-2 rounded-md"
-        >
-          {loading ? "Saving..." : "Save Settings"}
+      {/* Advanced Settings */}
+      <div className="glass-card p-6">
+        <div className="flex items-center mb-4">
+          <div className="glass-button p-2 rounded-full mr-3">
+            <i className="bx bx-cog text-purple-400"></i>
+          </div>
+          <div>
+            <h4 className="text-lg font-semibold text-white">
+              Advanced Settings
+            </h4>
+            <p className="text-sm text-white/60">
+              Additional welcome/goodbye options
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          {[
+            { label: "Delete message after 30 seconds", enabled: false },
+            { label: "Send message as DM to user", enabled: false },
+            { label: "Include server invite link", enabled: true },
+            { label: "Show user avatar in message", enabled: true },
+            { label: "Auto-assign default role", enabled: false },
+          ].map((setting, index) => (
+            <div
+              key={index}
+              className="glass-button p-3 flex items-center justify-between"
+            >
+              <span className="text-white/80">{setting.label}</span>
+              <button
+                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors duration-300 ${
+                  setting.enabled ? "bg-green-500" : "bg-gray-600"
+                }`}
+              >
+                <span
+                  className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform duration-300 ${
+                    setting.enabled ? "translate-x-5" : "translate-x-1"
+                  }`}
+                />
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Statistics */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="glass-card p-4 text-center">
+          <div className="text-2xl font-bold text-green-400 mb-1">24</div>
+          <div className="text-sm text-white/60">Members Welcomed Today</div>
+        </div>
+        <div className="glass-card p-4 text-center">
+          <div className="text-2xl font-bold text-orange-400 mb-1">3</div>
+          <div className="text-sm text-white/60">Members Left Today</div>
+        </div>
+        <div className="glass-card p-4 text-center">
+          <div className="text-2xl font-bold text-blue-400 mb-1">1,847</div>
+          <div className="text-sm text-white/60">Total Members</div>
+        </div>
+      </div>
+
+      {/* Save Button */}
+      <div className="flex justify-end">
+        <button className="glass-button px-8 py-3 text-white hover:text-pink-400 font-semibold transition-all duration-300 group">
+          <i className="bx bx-save mr-2 group-hover:scale-110 transition-transform duration-300"></i>
+          Save Settings
         </button>
       </div>
     </div>
   );
 };
+
 export default WelcomeComponent;
