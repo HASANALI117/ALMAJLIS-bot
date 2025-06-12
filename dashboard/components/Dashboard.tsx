@@ -14,6 +14,7 @@ import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
 
 import api from "@/utils/axios";
+import ComingSoon from "./ComingSoon";
 
 interface DashboardProps {
   guildId: string;
@@ -53,10 +54,28 @@ const Dashboard = ({ guildId }: DashboardProps) => {
       "game-alert": <GameAlertComponent />,
       welcome: <WelcomeComponent guildId={guildId} />,
       "reaction-roles": <ReactionRolesComponent />,
+      // Add more coming soon features
+      "music-bot": (
+        <ComingSoon
+          featureName="Music Bot"
+          description="High-quality music streaming with playlist support"
+          expectedDate="Q3 2024"
+        />
+      ),
+      leveling: (
+        <ComingSoon
+          featureName="Leveling System"
+          description="XP tracking and reward system for active members"
+          expectedDate="Q2 2024"
+        />
+      ),
     };
 
     const Component = components[activeSection as keyof typeof components] || (
-      <BotSettings />
+      <ComingSoon
+        featureName="Feature"
+        description="This feature is currently under development."
+      />
     );
 
     return (
