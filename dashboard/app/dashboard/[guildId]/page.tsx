@@ -1,10 +1,13 @@
 import Dashboard from "@/components/Dashboard";
+import { AuthProvider } from "@/contexts";
 
-const page = ({ params }: { params: { guildID: string } }) => {
+const page = async ({ params }: { params: { guildId: string } }) => {
+  const { guildId } = params;
+
   return (
-    <>
-      <Dashboard guildId={params.guildID} />
-    </>
+    <AuthProvider>
+      <Dashboard guildId={guildId} />
+    </AuthProvider>
   );
 };
 

@@ -34,8 +34,8 @@ export const GuildsProvider = ({ children }: { children: ReactNode }) => {
   const fetchGuilds = async () => {
     setLoading(true);
     try {
-      const res = await api.get("/guilds", { withCredentials: true });
-      setGuilds(res.data);
+      const { data } = await api.get("/guilds", { withCredentials: true });
+      setGuilds(data);
     } catch (error: any | unknown) {
       setGuilds([]);
       console.error("Failed to fetch guilds:", error.message);

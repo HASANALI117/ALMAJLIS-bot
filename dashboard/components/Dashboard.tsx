@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import BotSettings from "./BotSettings";
 import CommandsComponent from "./Commands";
@@ -11,6 +11,9 @@ import GameAlertComponent from "./Gamealerts";
 import ReactionRolesComponent from "./Reactionroles";
 import WelcomeComponent from "./Welcome";
 import Sidebar from "./Sidebar";
+import Navbar from "./Navbar";
+
+import api from "@/utils/axios";
 
 interface DashboardProps {
   guildId: string;
@@ -19,6 +22,21 @@ interface DashboardProps {
 const Dashboard = ({ guildId }: DashboardProps) => {
   // Tracking which section is currently active
   const [activeSection, setActiveSection] = useState("bot-settings");
+  const [guild, setGuild] = useState({});
+
+  useEffect(() => {
+    // Fetch guild data when the component mounts
+    const fetchGuildData = async () => {
+      try {
+        const { data } = await api.get(`/guilds/${guildId}`);
+        setGuild(data);
+      } catch (error) {
+        console.error("Error fetching guild data:", error);
+      }
+    };
+
+    fetchGuildData();
+  }, []);
 
   // Function to render the correct section based on activeSection state
   const renderActiveSection = () => {
@@ -58,6 +76,9 @@ const Dashboard = ({ guildId }: DashboardProps) => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-900 text-gray-100">
+      {/* Navbar */}
+
+      <Navbar guild={guild} />
       {/* Main Content with Sidebar */}
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}

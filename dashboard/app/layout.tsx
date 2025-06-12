@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import { AuthProvider } from "@/contexts";
 
 export const metadata: Metadata = {
   title: "ALMAJLIS Dashboard",
@@ -22,12 +20,9 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-gray-900">
-        <AuthProvider>
-          <div className="flex flex-col min-h-screen">
-            <Navbar />
-            <main className="flex-grow">{children}</main>
-          </div>
-        </AuthProvider>
+        <div className="flex flex-col min-h-screen">
+          <main className="flex-grow">{children}</main>
+        </div>
       </body>
     </html>
   );

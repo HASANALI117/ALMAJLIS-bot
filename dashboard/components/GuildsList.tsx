@@ -3,12 +3,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import axios from "axios";
-import { useAuth } from "@/contexts/index";
 import { useGuilds } from "@/contexts/index";
 
 const GuildsList = () => {
-  const { user, loading } = useAuth();
-  const { guilds } = useGuilds();
+  const { guilds, loading } = useGuilds();
 
   const handleInvite = async (guildId: string) => {
     try {
@@ -41,9 +39,7 @@ const GuildsList = () => {
 
   return (
     <div className="mt-12 text-center">
-      <h1 className="font-bold text-4xl">
-        Hello, {user?.global_name}! Please select a server to get started
-      </h1>
+      <h1 className="font-bold text-4xl">Select a server</h1>
 
       <div className="flex justify-center items-center flex-wrap">
         {guilds.map((guild) => (

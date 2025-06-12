@@ -10,9 +10,13 @@ import {
 import api from "@/utils/axios";
 
 type User = {
-  userID: string;
+  id: string;
+  email?: string;
   username: string;
-  avatar: string;
+  global_name?: string;
+  avatar: string | null;
+  banner?: string;
+  discriminator?: string;
 };
 
 interface AuthContextType {
