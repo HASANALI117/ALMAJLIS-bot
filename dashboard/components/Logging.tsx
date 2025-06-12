@@ -1,161 +1,360 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 
 const LoggingComponent = () => {
-  const [loggingEnabled, setLoggingEnabled] = useState(true);
+  const [selectedChannel, setSelectedChannel] = useState("");
+  const [logTypes, setLogTypes] = useState({
+    messageDelete: true,
+    messageEdit: true,
+    memberJoin: true,
+    memberLeave: true,
+    memberBan: true,
+    memberUnban: false,
+    channelCreate: true,
+    channelDelete: true,
+    roleCreate: false,
+    roleDelete: false,
+    voiceJoin: false,
+    voiceLeave: false,
+  });
 
-  const logEvents = [
-    { name: "Message Delete", enabled: true },
-    { name: "Message Edit", enabled: true },
-    { name: "Member Join", enabled: true },
-    { name: "Member Leave", enabled: false },
-    { name: "Member Ban", enabled: true },
-    { name: "Member Unban", enabled: true },
-    { name: "Channel Create", enabled: false },
-    { name: "Channel Delete", enabled: false },
-    { name: "Role Create", enabled: false },
-    { name: "Role Delete", enabled: false },
+  const channels = [
+    { id: "123456789", name: "general-logs" },
+    { id: "987654321", name: "mod-logs" },
+    { id: "456789123", name: "member-logs" },
   ];
 
+  const toggleLogType = (type: keyof typeof logTypes) => {
+    setLogTypes((prev) => ({ ...prev, [type]: !prev[type] }));
+  };
+
   return (
-    <div className="p-8">
-      <div className="flex items-center mb-6">
-        <h2 className="text-xl font-semibold flex items-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5 mr-2"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          </svg>
-          Logging
-        </h2>
-      </div>
-
-      <div className="bg-gray-800 rounded-md p-6 mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium">Logging Status</h3>
-          <div className="relative inline-block w-12 mr-2 align-middle select-none">
-            <input
-              type="checkbox"
-              id="toggle-logging"
-              checked={loggingEnabled}
-              onChange={() => setLoggingEnabled(!loggingEnabled)}
-              className="sr-only"
-            />
-            <label
-              htmlFor="toggle-logging"
-              className={`block overflow-hidden h-6 rounded-full cursor-pointer transition-colors duration-200 ease-in ${
-                loggingEnabled ? "bg-cyan-500" : "bg-gray-600"
-              }`}
-            >
-              <span
-                className={`block h-6 w-6 rounded-full bg-white shadow transform transition-transform duration-200 ease-in ${
-                  loggingEnabled ? "translate-x-6" : "translate-x-0"
-                }`}
-              ></span>
-            </label>
+    <div className="space-y-6">
+      {/* Log Channel Selection */}
+      <div className="glass-card p-6">
+        <div className="flex items-center mb-4">
+          <div className="glass-button p-2 rounded-full mr-3">
+            <i className="bx bx-hash text-green-400"></i>
+          </div>
+          <div>
+            <h4 className="text-lg font-semibold text-white">Log Channel</h4>
+            <p className="text-sm text-white/60">
+              Select channel for server logs
+            </p>
           </div>
         </div>
-
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-400 mb-2">
-            Log Channel
-          </label>
-          <select className="bg-gray-700 rounded-md px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-cyan-500">
-            <option>Select a channel</option>
-            <option>#mod-logs</option>
-            <option>#server-logs</option>
-            <option>#audit-logs</option>
-          </select>
-        </div>
-
-        <div className="mb-6">
-          <div className="flex justify-between items-center mb-2">
-            <label className="block text-sm font-medium text-gray-400">
-              Log Format
-            </label>
-            <span className="text-xs text-cyan-400">Premium feature</span>
-          </div>
-          <select
-            disabled
-            className="bg-gray-700 opacity-60 rounded-md px-4 py-2 w-full focus:outline-none"
-          >
-            <option>Embed (Default)</option>
-            <option>Text</option>
-            <option>Compact</option>
-            <option>Detailed</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-400 mb-2">
-            Log Retention
-          </label>
-          <select className="bg-gray-700 rounded-md px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-cyan-500">
-            <option>7 days</option>
-            <option>14 days</option>
-            <option>30 days</option>
-            <option>90 days</option>
-          </select>
-        </div>
-      </div>
-
-      <div className="bg-gray-800 rounded-md p-6">
-        <h3 className="text-lg font-medium mb-4">Logged Events</h3>
-        <p className="text-gray-400 text-sm mb-4">
-          Select which events should be logged in the server logs.
-        </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {logEvents.map((event, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-between bg-gray-700 rounded-md p-3"
+          <div>
+            <label className="block text-sm font-medium text-white/80 mb-2">
+              Primary Log Channel
+            </label>
+            <select
+              value={selectedChannel}
+              onChange={(e) => setSelectedChannel(e.target.value)}
+              className="w-full glass-button px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all duration-300"
             >
-              <span className="text-sm">{event.name}</span>
-              <div className="relative inline-block w-10 mr-2 align-middle select-none">
-                <input
-                  type="checkbox"
-                  id={`toggle-${index}`}
-                  defaultChecked={event.enabled}
-                  className="sr-only"
-                />
-                <label
-                  htmlFor={`toggle-${index}`}
-                  className={`block overflow-hidden h-5 rounded-full cursor-pointer transition-colors duration-200 ease-in ${
-                    event.enabled ? "bg-cyan-500" : "bg-gray-600"
-                  }`}
-                >
-                  <span
-                    className={`block h-5 w-5 rounded-full bg-white shadow transform transition-transform duration-200 ease-in ${
-                      event.enabled ? "translate-x-5" : "translate-x-0"
-                    }`}
-                  ></span>
-                </label>
+              <option value="">Select a channel...</option>
+              {channels.map((channel) => (
+                <option key={channel.id} value={channel.id}>
+                  #{channel.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="flex items-end">
+            <button className="glass-button px-6 py-3 text-white hover:text-green-400 font-medium transition-all duration-300 group">
+              <i className="bx bx-plus mr-2 group-hover:rotate-180 transition-transform duration-300"></i>
+              Create Log Channel
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Message Logs */}
+      <div className="glass-card p-6">
+        <div className="flex items-center mb-4">
+          <div className="glass-button p-2 rounded-full mr-3">
+            <i className="bx bx-message text-purple-400"></i>
+          </div>
+          <div>
+            <h4 className="text-lg font-semibold text-white">Message Logs</h4>
+            <p className="text-sm text-white/60">
+              Track message-related activities
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[
+            {
+              key: "messageDelete",
+              icon: "bx-trash",
+              label: "Message Deletions",
+              color: "text-red-400",
+            },
+            {
+              key: "messageEdit",
+              icon: "bx-edit",
+              label: "Message Edits",
+              color: "text-orange-400",
+            },
+          ].map((log) => (
+            <div
+              key={log.key}
+              className="glass-button p-4 flex items-center justify-between hover:bg-white/10 transition-all duration-300"
+            >
+              <div className="flex items-center">
+                <i className={`bx ${log.icon} ${log.color} mr-3 text-lg`}></i>
+                <span className="text-white/80">{log.label}</span>
               </div>
+              <button
+                onClick={() => toggleLogType(log.key as keyof typeof logTypes)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 ${
+                  logTypes[log.key as keyof typeof logTypes]
+                    ? "bg-green-500"
+                    : "bg-gray-600"
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${
+                    logTypes[log.key as keyof typeof logTypes]
+                      ? "translate-x-6"
+                      : "translate-x-1"
+                  }`}
+                />
+              </button>
             </div>
           ))}
         </div>
+      </div>
 
-        <div className="mt-6 flex justify-end">
-          <button className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-md mr-2">
-            Reset to Default
-          </button>
-          <button className="bg-cyan-500 hover:bg-cyan-600 px-6 py-2 rounded-md">
-            Save Settings
-          </button>
+      {/* Member Logs */}
+      <div className="glass-card p-6">
+        <div className="flex items-center mb-4">
+          <div className="glass-button p-2 rounded-full mr-3">
+            <i className="bx bx-user text-blue-400"></i>
+          </div>
+          <div>
+            <h4 className="text-lg font-semibold text-white">Member Logs</h4>
+            <p className="text-sm text-white/60">
+              Track member-related activities
+            </p>
+          </div>
         </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[
+            {
+              key: "memberJoin",
+              icon: "bx-user-plus",
+              label: "Member Joins",
+              color: "text-green-400",
+            },
+            {
+              key: "memberLeave",
+              icon: "bx-user-minus",
+              label: "Member Leaves",
+              color: "text-yellow-400",
+            },
+            {
+              key: "memberBan",
+              icon: "bx-user-x",
+              label: "Member Bans",
+              color: "text-red-400",
+            },
+            {
+              key: "memberUnban",
+              icon: "bx-user-check",
+              label: "Member Unbans",
+              color: "text-blue-400",
+            },
+          ].map((log) => (
+            <div
+              key={log.key}
+              className="glass-button p-4 flex items-center justify-between hover:bg-white/10 transition-all duration-300"
+            >
+              <div className="flex items-center">
+                <i className={`bx ${log.icon} ${log.color} mr-3 text-lg`}></i>
+                <span className="text-white/80">{log.label}</span>
+              </div>
+              <button
+                onClick={() => toggleLogType(log.key as keyof typeof logTypes)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 ${
+                  logTypes[log.key as keyof typeof logTypes]
+                    ? "bg-green-500"
+                    : "bg-gray-600"
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${
+                    logTypes[log.key as keyof typeof logTypes]
+                      ? "translate-x-6"
+                      : "translate-x-1"
+                  }`}
+                />
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Server Logs */}
+      <div className="glass-card p-6">
+        <div className="flex items-center mb-4">
+          <div className="glass-button p-2 rounded-full mr-3">
+            <i className="bx bx-server text-pink-400"></i>
+          </div>
+          <div>
+            <h4 className="text-lg font-semibold text-white">Server Logs</h4>
+            <p className="text-sm text-white/60">
+              Track server configuration changes
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[
+            {
+              key: "channelCreate",
+              icon: "bx-plus-circle",
+              label: "Channel Created",
+              color: "text-green-400",
+            },
+            {
+              key: "channelDelete",
+              icon: "bx-minus-circle",
+              label: "Channel Deleted",
+              color: "text-red-400",
+            },
+            {
+              key: "roleCreate",
+              icon: "bx-crown",
+              label: "Role Created",
+              color: "text-purple-400",
+            },
+            {
+              key: "roleDelete",
+              icon: "bx-crown",
+              label: "Role Deleted",
+              color: "text-orange-400",
+            },
+          ].map((log) => (
+            <div
+              key={log.key}
+              className="glass-button p-4 flex items-center justify-between hover:bg-white/10 transition-all duration-300"
+            >
+              <div className="flex items-center">
+                <i className={`bx ${log.icon} ${log.color} mr-3 text-lg`}></i>
+                <span className="text-white/80">{log.label}</span>
+              </div>
+              <button
+                onClick={() => toggleLogType(log.key as keyof typeof logTypes)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 ${
+                  logTypes[log.key as keyof typeof logTypes]
+                    ? "bg-green-500"
+                    : "bg-gray-600"
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${
+                    logTypes[log.key as keyof typeof logTypes]
+                      ? "translate-x-6"
+                      : "translate-x-1"
+                  }`}
+                />
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Voice Logs */}
+      <div className="glass-card p-6">
+        <div className="flex items-center mb-4">
+          <div className="glass-button p-2 rounded-full mr-3">
+            <i className="bx bx-microphone text-cyan-400"></i>
+          </div>
+          <div>
+            <h4 className="text-lg font-semibold text-white">Voice Logs</h4>
+            <p className="text-sm text-white/60">
+              Track voice channel activities
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[
+            {
+              key: "voiceJoin",
+              icon: "bx-phone-call",
+              label: "Voice Channel Joins",
+              color: "text-green-400",
+            },
+            {
+              key: "voiceLeave",
+              icon: "bx-phone-off",
+              label: "Voice Channel Leaves",
+              color: "text-red-400",
+            },
+          ].map((log) => (
+            <div
+              key={log.key}
+              className="glass-button p-4 flex items-center justify-between hover:bg-white/10 transition-all duration-300"
+            >
+              <div className="flex items-center">
+                <i className={`bx ${log.icon} ${log.color} mr-3 text-lg`}></i>
+                <span className="text-white/80">{log.label}</span>
+              </div>
+              <button
+                onClick={() => toggleLogType(log.key as keyof typeof logTypes)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 ${
+                  logTypes[log.key as keyof typeof logTypes]
+                    ? "bg-green-500"
+                    : "bg-gray-600"
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${
+                    logTypes[log.key as keyof typeof logTypes]
+                      ? "translate-x-6"
+                      : "translate-x-1"
+                  }`}
+                />
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Statistics */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="glass-card p-4 text-center">
+          <div className="text-2xl font-bold text-green-400 mb-1">
+            {Object.values(logTypes).filter(Boolean).length}
+          </div>
+          <div className="text-sm text-white/60">Active Log Types</div>
+        </div>
+        <div className="glass-card p-4 text-center">
+          <div className="text-2xl font-bold text-blue-400 mb-1">24/7</div>
+          <div className="text-sm text-white/60">Monitoring</div>
+        </div>
+        <div className="glass-card p-4 text-center">
+          <div className="text-2xl font-bold text-purple-400 mb-1">∞</div>
+          <div className="text-sm text-white/60">Log Retention</div>
+        </div>
+      </div>
+
+      {/* Save Button */}
+      <div className="flex justify-end">
+        <button className="glass-button px-8 py-3 text-white hover:text-blue-400 font-semibold transition-all duration-300 group">
+          <i className="bx bx-save mr-2 group-hover:scale-110 transition-transform duration-300"></i>
+          Save Settings
+        </button>
       </div>
     </div>
   );
 };
+
 export default LoggingComponent;
