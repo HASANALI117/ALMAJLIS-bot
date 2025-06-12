@@ -4,7 +4,6 @@ export const navigation = [
   { name: "Discord", href: "#", icon: "bxl-discord" },
   { name: "Status", href: "#", icon: "bxs-heart" },
   { name: "Guilds", href: "/guilds", icon: "bxs-server" },
-  { name: "Dashboard", href: "/dashboard", icon: "bxs-dashboard" },
 ];
 
 export const sidebarMenu = [

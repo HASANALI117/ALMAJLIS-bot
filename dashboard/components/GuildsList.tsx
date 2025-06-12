@@ -10,10 +10,10 @@ const GuildsList = () => {
   const { user, loading } = useAuth();
   const { guilds } = useGuilds();
 
-  const handleInvite = async (guildID: string) => {
+  const handleInvite = async (guildId: string) => {
     try {
       const response = await axios.get(
-        `http://localhost:3002/dashboard/invite-bot/${guildID}`,
+        `http://localhost:3002/dashboard/invite-bot/${guildId}`,
         { withCredentials: true }
       );
 
@@ -42,7 +42,7 @@ const GuildsList = () => {
   return (
     <div className="mt-12 text-center">
       <h1 className="font-bold text-4xl">
-        Hello, {user?.username}! Please select a server to get started
+        Hello, {user?.global_name}! Please select a server to get started
       </h1>
 
       <div className="flex justify-center items-center flex-wrap">
@@ -51,7 +51,7 @@ const GuildsList = () => {
             href={`/dashboard/${guild.id}`}
             className="cursor-pointer w-80 m-8 bg-gray-600 rounded-lg  p-8 hover:bg-gray-500 transition"
             key={guild.id}
-            onClick={() => handleInvite(guild.id)}
+            // onClick={() => handleInvite(guild.id)}
           >
             <h1 className="font-bold text-2xl truncate">{guild.name}</h1>
 

@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const fetchUser = async () => {
     setLoading(true);
     try {
-      const res = await api.get("/dashboard/user", { withCredentials: true });
+      const res = await api.get("/users/me", { withCredentials: true });
       setUser(res.data);
     } catch (error: any | unknown) {
       if (error.response && error.response.status === 401) {

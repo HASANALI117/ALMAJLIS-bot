@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { navigation } from "../constants";
+import { navigation } from "../utils/constants";
 import { useAuth } from "@/contexts";
 
 const Navbar = () => {
   const { user, loading } = useAuth();
-  console.log("user", user);
 
   return (
     <nav className="bg-gray-800">
@@ -21,7 +20,7 @@ const Navbar = () => {
               height={50}
               className="rounded-full w-14 h-14"
             />
-            <h1 className="pl-4 font-bold">ALMAJLIS</h1>
+            <h1 className="pl-4 font-bold">ALMAJLIS-BOT</h1>
           </Link>
           {navigation.map((item) => (
             <a
@@ -39,13 +38,13 @@ const Navbar = () => {
           {loading ? null : user ? (
             <div className="flex justify-center items-center">
               <Image
-                src={`https://cdn.discordapp.com/avatars/${user.userID}/${user.avatar}.png`}
+                src={`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`}
                 alt="User Avatar"
                 className="h-10 w-10 rounded-full"
                 width={40}
                 height={40}
               ></Image>
-              <h1 className="text-xl pl-4">{user.username}</h1>
+              <h1 className="text-xl pl-4">{user.global_name}</h1>
             </div>
           ) : (
             ""
