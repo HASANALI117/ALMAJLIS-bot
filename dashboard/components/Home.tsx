@@ -12,14 +12,13 @@ const Home = () => {
 
       <div className="relative z-10 flex justify-center items-center min-h-screen px-4">
         <div className="flex flex-col lg:flex-row items-center justify-center max-w-6xl mx-auto">
-          {/* Logo Section */}
-
           {/* Content Section */}
           <div className="text-center lg:text-left glass-card p-12 max-w-xl">
             <h1 className="font-extrabold text-5xl text-white text-glow mb-6">
               ALMAJLIS-BOT
             </h1>
 
+            {/* Logo Section */}
             <div className="flex justify-center items-center mb-8">
               <div className="glass-card p-8 pulse-glow">
                 <Image

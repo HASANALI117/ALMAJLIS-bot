@@ -15,6 +15,7 @@ import Navbar from "./Navbar";
 
 import api from "@/utils/axios";
 import ComingSoon from "./ComingSoon";
+import { dashboardSections } from "@/utils/constants";
 
 interface DashboardProps {
   guildId: string;
@@ -167,13 +168,6 @@ const Dashboard = ({ guildId }: DashboardProps) => {
             <div className="flex-1 relative">
               {/* Content Area */}
               <div className="absolute inset-0">{renderActiveSection()}</div>
-
-              {/* Floating Action Button */}
-              <div className="absolute bottom-8 right-8 z-20">
-                <button className="glass-button p-4 rounded-full shadow-2xl group hover:scale-110 transition-all duration-300">
-                  <i className="bx bx-help-circle text-2xl text-white group-hover:text-blue-400 transition-colors duration-300"></i>
-                </button>
-              </div>
             </div>
 
             {/* Stats Panel - Optional */}
@@ -275,47 +269,23 @@ const Dashboard = ({ guildId }: DashboardProps) => {
   );
 };
 
-// Helper functions
+// Helper functions using constants
 const getSectionTitle = (section: string): string => {
-  const titles: Record<string, string> = {
-    "bot-settings": "Bot Settings",
-    commands: "Custom Commands",
-    webhooks: "Webhooks & Logs",
-    automod: "Auto Moderation",
-    logging: "Server Logging",
-    "game-alert": "Game Alerts",
-    welcome: "Welcome Messages",
-    "reaction-roles": "Reaction Roles",
-  };
-  return titles[section] || "Dashboard";
+  const sectionConfig =
+    dashboardSections[section as keyof typeof dashboardSections];
+  return sectionConfig?.title || "Dashboard";
 };
 
 const getSectionDescription = (section: string): string => {
-  const descriptions: Record<string, string> = {
-    "bot-settings": "Configure basic bot settings and preferences",
-    commands: "Create and manage custom commands for your server",
-    webhooks: "Setup webhook integrations and external logging",
-    automod: "Automatic moderation tools and spam protection",
-    logging: "Monitor and track server activity",
-    "game-alert": "Setup gaming notifications and alerts",
-    welcome: "Customize welcome messages for new members",
-    "reaction-roles": "Configure role assignment through reactions",
-  };
-  return descriptions[section] || "Manage your bot configuration";
+  const sectionConfig =
+    dashboardSections[section as keyof typeof dashboardSections];
+  return sectionConfig?.description || "Manage your bot configuration";
 };
 
 const getSectionIcon = (section: string): string => {
-  const icons: Record<string, string> = {
-    "bot-settings": "bx-cog",
-    commands: "bx-terminal",
-    webhooks: "bx-link",
-    automod: "bx-shield",
-    logging: "bx-history",
-    "game-alert": "bx-joystick",
-    welcome: "bx-door-open",
-    "reaction-roles": "bx-happy",
-  };
-  return icons[section] || "bx-dashboard";
+  const sectionConfig =
+    dashboardSections[section as keyof typeof dashboardSections];
+  return sectionConfig?.icon || "bx-dashboard";
 };
 
 export default Dashboard;
