@@ -1,5 +1,10 @@
 import { Request, Response } from "express";
-import { getGuildService, getMutualGuildsService } from "../../services/guilds";
+import {
+  getGuildService,
+  getMutualGuildsService,
+  getGuildChannelsService,
+  createBotInviteService,
+} from "../../services/guilds";
 import { User } from "../../models/User";
 
 export const getGuildsController = async (req: Request, res: Response) => {
@@ -37,5 +42,32 @@ export const getGuildController = async (req: Request, res: Response) => {
   } catch (err) {
     console.log(err);
     res.status(400).send({ msg: "Error" });
+  }
+};
+
+export const getGuildChannelsController = async (
+  req: Request,
+  res: Response
+) => {
+  const { id } = req.params;
+  try {
+    const channels = await getGuildChannelsService(id);
+    res.send(channels);
+  } catch (err) {
+    console.log(err);
+    res.status(400).send({ msg: "Error" });
+  }
+};
+
+export const inviteBotController = (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const inviteURL = createBotInviteService(id);
+
+    res.json({ inviteURL });
+  } catch (err) {
+    console.error("Error creating bot invite URL:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 };

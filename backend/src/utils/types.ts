@@ -16,3 +16,22 @@ export type DiscordUser = {
   banner?: string;
   discriminator?: string;
 };
+
+export type Channel = {
+  id: String;
+  type: number;
+  name: String;
+  guild_id: String;
+  last_message_id?: String;
+  parent_id?: String;
+  rate_limit_per_user?: number;
+  topic?: String;
+  position?: number;
+  permission_overwrites?: Array<{
+    id: String;
+    type: number;
+    allow: String;
+    deny: String;
+  }>;
+  nsfw?: Boolean;
+};
