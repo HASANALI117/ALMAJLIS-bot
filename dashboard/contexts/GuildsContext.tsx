@@ -8,15 +8,10 @@ import {
   ReactNode,
 } from "react";
 import api from "@/utils/axios";
-
-type Guild = {
-  id: string;
-  name: string;
-  icon: string;
-};
+import { PartialGuild } from "@/utils/types";
 
 interface GuildsContextType {
-  guilds: Guild[];
+  guilds: PartialGuild[];
   loading: boolean;
   refreshGuilds: () => void;
 }
@@ -28,7 +23,7 @@ const GuildsContext = createContext<GuildsContextType>({
 });
 
 export const GuildsProvider = ({ children }: { children: ReactNode }) => {
-  const [guilds, setGuilds] = useState<Guild[]>([]);
+  const [guilds, setGuilds] = useState<PartialGuild[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchGuilds = async () => {
@@ -36,7 +31,7 @@ export const GuildsProvider = ({ children }: { children: ReactNode }) => {
     try {
       const { data } = await api.get("/guilds", { withCredentials: true });
       setGuilds(data);
-    } catch (error: any | unknown) {
+    } catch (error: any) {
       setGuilds([]);
       console.error("Failed to fetch guilds:", error.message);
     }

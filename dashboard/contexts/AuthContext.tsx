@@ -8,19 +8,11 @@ import {
   ReactNode,
 } from "react";
 import api from "@/utils/axios";
-
-type User = {
-  id: string;
-  email?: string;
-  username: string;
-  global_name?: string;
-  avatar: string | null;
-  banner?: string;
-  discriminator?: string;
-};
+import { DiscordUser } from "@/utils/types";
+import { usePathname, useRouter } from "next/navigation";
 
 interface AuthContextType {
-  user: User | null;
+  user: DiscordUser | null;
   loading: boolean;
   refreshUser: () => void;
 }
@@ -32,29 +24,40 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<DiscordUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const pathname = usePathname();
 
   const fetchUser = async () => {
+    // Don't fetch if we're already on the login page
+    if (pathname === "/") {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     try {
-      const res = await api.get("/users/me", { withCredentials: true });
-      setUser(res.data);
-    } catch (error: any | unknown) {
+      const { data } = await api.get("/users/me", { withCredentials: true });
+      setUser(data);
+      console.log("Fetched user:", data);
+    } catch (error: any) {
       if (error.response && error.response.status === 401) {
-        // Redirect to Discord signin page
-        window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/discord`;
+        // Only redirect if we're not already on a public page
+        if (pathname !== "/") {
+          router.push("/");
+        }
         return;
       }
       console.error("Failed to fetch user:", error.message);
       setUser(null);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
     fetchUser();
-  }, []);
+  }, [pathname]); // Fetch user on path change
 
   return (
     <AuthContext.Provider value={{ user, loading, refreshUser: fetchUser }}>

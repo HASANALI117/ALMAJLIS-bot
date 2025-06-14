@@ -7,7 +7,6 @@ import { useAuth } from "@/contexts";
 
 const Navbar = ({ guild }: { guild: any }) => {
   const { user, loading } = useAuth();
-  console.log("guild in Navbar:", guild);
 
   return (
     <nav className="glass-nav sticky top-0 z-50 px-6 py-4">
