@@ -1,8 +1,8 @@
-import ComingSoon from "@/components/ComingSoon";
+import WelcomeComponent from "@/components/dashboard/Welcome";
 import React from "react";
 
 const WelcomePage = () => {
-  return <ComingSoon />;
+  return <WelcomeComponent />;
 };
 
 export default WelcomePage;

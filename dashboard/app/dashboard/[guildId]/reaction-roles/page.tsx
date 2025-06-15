@@ -1,4 +1,4 @@
-import ReactionrolesComponent from "@/components/Reactionroles";
+import ReactionrolesComponent from "@/components/dashboard/Reactionroles";
 import React from "react";
 
 const ReactionRolesPage = () => {

@@ -1,4 +1,4 @@
-import LoggingComponent from "@/components/Logging";
+import LoggingComponent from "@/components/dashboard/Logging";
 import React from "react";
 
 const LoggingPage = () => {

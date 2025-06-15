@@ -1,4 +1,4 @@
-import GuildsList from "@/components/GuildsList";
+import GuildsList from "@/components/pages/GuildsList";
 import { GuildsProvider } from "@/contexts/GuildsContext";
 
 const GuildsPage = () => {

@@ -1,4 +1,4 @@
-import WebHooksComponent from "@/components/Webhooks";
+import WebHooksComponent from "@/components/dashboard/Webhooks";
 import React from "react";
 
 const WebhooksPage = () => {

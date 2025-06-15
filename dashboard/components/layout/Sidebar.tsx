@@ -1,4 +1,4 @@
-import { sidebarMenu } from "../utils/constants";
+import { sidebarMenu } from "@/utils/constants";
 
 type SidebarMenuProps = {
   activeSection: string;

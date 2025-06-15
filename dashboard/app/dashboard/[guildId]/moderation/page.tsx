@@ -1,4 +1,4 @@
-import ComingSoon from "@/components/ComingSoon";
+import ComingSoon from "@/components/common/ComingSoon";
 import React from "react";
 
 const ModerationPage = () => {

@@ -3,19 +3,20 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 
-import BotSettings from "./BotSettings";
-import CommandsComponent from "./Commands";
-import WebhooksComponent from "./Webhooks";
-import AutomodComponent from "./Automod";
-import LoggingComponent from "./Logging";
-import GameAlertComponent from "./Gamealerts";
-import ReactionRolesComponent from "./Reactionroles";
-import WelcomeComponent from "./Welcome";
-import Sidebar from "./Sidebar";
-import Navbar from "./Navbar";
+import BotSettings from "@/components/dashboard/BotSettings";
+import CommandsComponent from "@/components/dashboard/Commands";
+import WebhooksComponent from "@/components/dashboard/Webhooks";
+import AutomodComponent from "@/components/dashboard/Automod";
+import LoggingComponent from "@/components/dashboard/Logging";
+import GameAlertComponent from "@/components/dashboard/Gamealerts";
+import ReactionRolesComponent from "@/components/dashboard/Reactionroles";
+import WelcomeComponent from "@/components/dashboard/Welcome";
+
+import Sidebar from "@/components/layout/Sidebar";
+import Navbar from "@/components/layout/Navbar";
+import ComingSoon from "@/components/common/ComingSoon";
 
 import api from "@/utils/axios";
-import ComingSoon from "./ComingSoon";
 import { dashboardSections } from "@/utils/constants";
 
 const Dashboard = () => {
@@ -54,27 +55,12 @@ const Dashboard = () => {
       welcome: <WelcomeComponent />,
       "reaction-roles": <ReactionRolesComponent />,
       // Add more coming soon features
-      "music-bot": (
-        <ComingSoon
-          featureName="Music Bot"
-          description="High-quality music streaming with playlist support"
-          expectedDate="Q3 2024"
-        />
-      ),
-      leveling: (
-        <ComingSoon
-          featureName="Leveling System"
-          description="XP tracking and reward system for active members"
-          expectedDate="Q2 2024"
-        />
-      ),
+      "music-bot": <ComingSoon />,
+      leveling: <ComingSoon />,
     };
 
     const Component = components[activeSection as keyof typeof components] || (
-      <ComingSoon
-        featureName="Feature"
-        description="This feature is currently under development."
-      />
+      <ComingSoon />
     );
 
     return (

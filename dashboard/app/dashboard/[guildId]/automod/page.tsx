@@ -1,4 +1,4 @@
-import AutomodComponent from "@/components/Automod";
+import AutomodComponent from "@/components/dashboard/Automod";
 import React from "react";
 
 const AutoModPage = () => {

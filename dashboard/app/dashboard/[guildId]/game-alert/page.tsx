@@ -1,4 +1,4 @@
-import GamealertsComponent from "@/components/Gamealerts";
+import GamealertsComponent from "@/components/dashboard/Gamealerts";
 import React from "react";
 
 const GameAlertsPage = () => {

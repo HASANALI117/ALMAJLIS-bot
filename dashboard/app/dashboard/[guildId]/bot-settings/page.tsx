@@ -1,4 +1,4 @@
-import BotSettings from "@/components/BotSettings";
+import BotSettings from "@/components/dashboard/BotSettings";
 import React from "react";
 
 const BotSettingsPage = () => {

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { navigation } from "../utils/constants";
+import { navigation } from "@/utils/constants";
 import { useAuth } from "@/contexts";
 
 const Navbar = ({ guild }: { guild: any }) => {

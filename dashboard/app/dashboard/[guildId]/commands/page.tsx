@@ -1,4 +1,4 @@
-import CommandsComponent from "@/components/Commands";
+import CommandsComponent from "@/components/dashboard/Commands";
 import React from "react";
 
 const CommandsPage = () => {
