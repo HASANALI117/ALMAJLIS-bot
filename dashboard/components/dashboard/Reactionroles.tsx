@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import ChannelSelect from "../common/ChannelSelect";
 
 const ReactionrolesComponent = () => {
   const [reactionRoles, setReactionRoles] = useState([
@@ -34,12 +35,6 @@ const ReactionrolesComponent = () => {
     role: "",
     messageId: "",
   });
-
-  const channels = [
-    { id: "123456789", name: "roles" },
-    { id: "987654321", name: "general" },
-    { id: "456789123", name: "lobby" },
-  ];
 
   const availableRoles = [
     { id: "role_001", name: "Gamer" },
@@ -93,21 +88,12 @@ const ReactionrolesComponent = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="block text-sm font-medium text-white/80 mb-2">
-                Channel
-              </label>
-              <select
+              <ChannelSelect
                 value={selectedChannel}
-                onChange={(e) => setSelectedChannel(e.target.value)}
-                className="w-full glass-button px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500/50 transition-all duration-300"
-              >
-                <option value="">Select a channel...</option>
-                {channels.map((channel) => (
-                  <option key={channel.id} value={channel.id}>
-                    #{channel.name}
-                  </option>
-                ))}
-              </select>
+                onChange={setSelectedChannel}
+                label="Channel"
+                placeholder="Select a channel..."
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-white/80 mb-2">
@@ -369,7 +355,7 @@ const ReactionrolesComponent = () => {
         </div>
         <div className="glass-card p-4 text-center">
           <div className="text-2xl font-bold text-blue-400 mb-1">23</div>
-          <div className="text-sm text-white/60">Today's Reactions</div>
+          <div className="text-sm text-white/60">Today&apos;s Reactions</div>
         </div>
         <div className="glass-card p-4 text-center">
           <div className="text-2xl font-bold text-purple-400 mb-1">89%</div>

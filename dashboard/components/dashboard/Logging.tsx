@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import ChannelSelect from "../common/ChannelSelect";
 
 const LoggingComponent = () => {
   const [selectedChannel, setSelectedChannel] = useState("");
@@ -18,12 +19,6 @@ const LoggingComponent = () => {
     voiceJoin: false,
     voiceLeave: false,
   });
-
-  const channels = [
-    { id: "123456789", name: "general-logs" },
-    { id: "987654321", name: "mod-logs" },
-    { id: "456789123", name: "member-logs" },
-  ];
 
   const toggleLogType = (type: keyof typeof logTypes) => {
     setLogTypes((prev) => ({ ...prev, [type]: !prev[type] }));
@@ -47,21 +42,12 @@ const LoggingComponent = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-white/80 mb-2">
-              Primary Log Channel
-            </label>
-            <select
+            <ChannelSelect
               value={selectedChannel}
-              onChange={(e) => setSelectedChannel(e.target.value)}
-              className="w-full glass-button px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all duration-300"
-            >
-              <option value="">Select a channel...</option>
-              {channels.map((channel) => (
-                <option key={channel.id} value={channel.id}>
-                  #{channel.name}
-                </option>
-              ))}
-            </select>
+              onChange={setSelectedChannel}
+              label="Primary Log Channel"
+              placeholder="Select a channel..."
+            />
           </div>
           <div className="flex items-end">
             <button className="glass-button px-6 py-3 text-white hover:text-green-400 font-medium transition-all duration-300 group">

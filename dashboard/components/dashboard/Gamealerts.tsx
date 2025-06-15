@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import ChannelSelect from "../common/ChannelSelect";
 
 const GamealertsComponent = () => {
   const [gameAlerts, setGameAlerts] = useState(true);
@@ -12,12 +13,6 @@ const GamealertsComponent = () => {
     releases: true,
     sales: false,
   });
-
-  const channels = [
-    { id: "123456789", name: "game-alerts" },
-    { id: "987654321", name: "announcements" },
-    { id: "456789123", name: "gaming" },
-  ];
 
   const toggleAlertType = (type: keyof typeof alertTypes) => {
     setAlertTypes((prev) => ({ ...prev, [type]: !prev[type] }));
@@ -45,21 +40,12 @@ const GamealertsComponent = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-white/80 mb-2">
-                  Notification Channel
-                </label>
-                <select
+                <ChannelSelect
                   value={selectedChannel}
-                  onChange={(e) => setSelectedChannel(e.target.value)}
-                  className="w-full glass-button px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300"
-                >
-                  <option value="">Select a channel...</option>
-                  {channels.map((channel) => (
-                    <option key={channel.id} value={channel.id}>
-                      #{channel.name}
-                    </option>
-                  ))}
-                </select>
+                  onChange={setSelectedChannel}
+                  label="Channel"
+                  placeholder="Select a channel..."
+                />
               </div>
               <div className="flex items-end">
                 <button className="glass-button px-6 py-3 text-white hover:text-blue-400 font-medium transition-all duration-300 group">

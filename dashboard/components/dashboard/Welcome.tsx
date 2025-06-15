@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import ChannelSelect from "../common/ChannelSelect";
 
 const WelcomeComponent = () => {
   const [welcomeEnabled, setWelcomeEnabled] = useState(true);
@@ -14,12 +15,6 @@ const WelcomeComponent = () => {
   const [goodbyeMessage, setGoodbyeMessage] = useState(
     "Goodbye {user}, we'll miss you! 👋"
   );
-
-  const channels = [
-    { id: "123456789", name: "welcome" },
-    { id: "987654321", name: "general" },
-    { id: "456789123", name: "lobby" },
-  ];
 
   const placeholders = [
     { placeholder: "{user}", description: "Mention the user" },
@@ -64,21 +59,12 @@ const WelcomeComponent = () => {
           <div className="space-y-4 p-4 glass-dark rounded-lg">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-white/80 mb-2">
-                  Welcome Channel
-                </label>
-                <select
+                <ChannelSelect
                   value={selectedWelcomeChannel}
-                  onChange={(e) => setSelectedWelcomeChannel(e.target.value)}
-                  className="w-full glass-button px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all duration-300"
-                >
-                  <option value="">Select a channel...</option>
-                  {channels.map((channel) => (
-                    <option key={channel.id} value={channel.id}>
-                      #{channel.name}
-                    </option>
-                  ))}
-                </select>
+                  onChange={setSelectedWelcomeChannel}
+                  label="Welcome Channel"
+                  placeholder="Select a channel..."
+                />
               </div>
               <div className="flex items-end">
                 <button className="glass-button px-6 py-3 text-white hover:text-green-400 font-medium transition-all duration-300 group">
@@ -169,21 +155,12 @@ const WelcomeComponent = () => {
           <div className="space-y-4 p-4 glass-dark rounded-lg">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-white/80 mb-2">
-                  Goodbye Channel
-                </label>
-                <select
+                <ChannelSelect
                   value={selectedGoodbyeChannel}
-                  onChange={(e) => setSelectedGoodbyeChannel(e.target.value)}
-                  className="w-full glass-button px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300"
-                >
-                  <option value="">Select a channel...</option>
-                  {channels.map((channel) => (
-                    <option key={channel.id} value={channel.id}>
-                      #{channel.name}
-                    </option>
-                  ))}
-                </select>
+                  onChange={setSelectedGoodbyeChannel}
+                  label="Goodbye Channel"
+                  placeholder="Select a channel..."
+                />
               </div>
               <div className="flex items-end">
                 <button className="glass-button px-6 py-3 text-white hover:text-orange-400 font-medium transition-all duration-300 group">
