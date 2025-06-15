@@ -12,7 +12,15 @@ export const sidebarMenu = [
     links: [
       { key: "bot-settings", label: "Bot settings", icon: "⚙️" },
       { key: "commands", label: "Commands", icon: "💬" },
-      { key: "webhooks", label: "Weblogs", icon: "🌐" },
+      { key: "webhooks", label: "Webhooks", icon: "🌐" },
+    ],
+  },
+  {
+    category: "UTILITY",
+    links: [
+      { key: "welcome", label: "Welcome", icon: "👋" },
+      { key: "reaction-roles", label: "Reaction roles", icon: "😀" },
+      { key: "levels", label: "Levels", icon: "⬆️", badge: "Premium" },
     ],
   },
   {
@@ -35,15 +43,6 @@ export const sidebarMenu = [
     links: [
       { key: "twitch", label: "Twitch", icon: "📺" },
       { key: "youtube", label: "Youtube", icon: "▶️" },
-    ],
-  },
-  {
-    category: "UTILITY",
-    links: [
-      { key: "welcome", label: "Welcome", icon: "👋" },
-      { key: "reaction-roles", label: "Reaction roles", icon: "😀" },
-      { key: "starboard", label: "Starboard", icon: "📊" },
-      { key: "levels", label: "Levels", icon: "⬆️", badge: "Premium" },
     ],
   },
 ];
@@ -134,18 +133,10 @@ export const dashboardSections = {
     icon: "bx-trending-up",
     url: "/dashboard/{guildId}/levels",
   },
-};
-
-// Coming soon features
-export const comingSoonFeatures = {
-  "music-bot": {
-    featureName: "Music Bot",
-    description: "High-quality music streaming with playlist support",
-    expectedDate: "Q3 2024",
-  },
-  leveling: {
-    featureName: "Leveling System",
-    description: "XP tracking and reward system for active members",
-    expectedDate: "Q2 2024",
+  "coming-soon": {
+    title: "Coming Soon",
+    description: "Exciting new features launching soon",
+    icon: "bx-time-five",
+    url: "/dashboard/{guildId}/coming-soon",
   },
 };

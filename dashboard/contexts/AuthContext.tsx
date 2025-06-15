@@ -39,7 +39,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const { data } = await api.get("/users/me", { withCredentials: true });
       setUser(data);
-      console.log("Fetched user:", data);
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         // Only redirect if we're not already on a public page

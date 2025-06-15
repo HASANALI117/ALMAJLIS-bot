@@ -9,7 +9,14 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_FRONTEND_URL: process.env.FRONTEND_URL,
   },
   images: {
-    domains: ["cdn.discordapp.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.discordapp.com",
+        port: "",
+        pathname: "/**",
+      },
+    ],
   },
   reactStrictMode: false, // Disable StrictMode
 };
