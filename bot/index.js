@@ -35,4 +35,4 @@ new CommandKit({
   eventsPath: path.join(__dirname, "events"),
 });
 
-client.login(process.env.TOKEN);
+client.login(process.env.DISCORD_BOT_TOKEN);

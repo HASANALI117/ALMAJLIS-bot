@@ -2,6 +2,7 @@ import { Router } from "express";
 import authRouter from "./auth";
 import guildsRouter from "./guilds";
 import userRouter from "./user";
+import welcomeRouter from "./welcome";
 import { isAuthenticated } from "../utils/middlewares";
 
 const router = Router();
@@ -9,5 +10,6 @@ const router = Router();
 router.use("/auth", authRouter);
 router.use("/guilds", isAuthenticated, guildsRouter);
 router.use("/users", isAuthenticated, userRouter);
+router.use("/welcome", welcomeRouter);
 
 export default router;

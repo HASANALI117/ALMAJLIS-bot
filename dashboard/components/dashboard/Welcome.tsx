@@ -1,10 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ChannelSelect from "../common/ChannelSelect";
+import api from "@/utils/axios";
+import { useParams } from "next/navigation";
+import { useAuth, useGuild } from "@/contexts";
 
 const WelcomeComponent = () => {
+  const { guildId } = useParams();
+  const { guild } = useGuild();
+  const { user } = useAuth();
   const [welcomeEnabled, setWelcomeEnabled] = useState(true);
   const [goodbyeEnabled, setGoodbyeEnabled] = useState(false);
   const [selectedWelcomeChannel, setSelectedWelcomeChannel] = useState("");
@@ -22,6 +28,37 @@ const WelcomeComponent = () => {
     { placeholder: "{membercount}", description: "Total member count" },
     { placeholder: "{username}", description: "Username without mention" },
   ];
+
+  const saveSettings = async () => {
+    try {
+      const { data } = await api.post(`/welcome/${guildId}`, {
+        guildId,
+        channelId: selectedWelcomeChannel,
+        message: welcomeMessage,
+      });
+      console.log("Settings saved:", data);
+    } catch (error) {
+      console.error("Error saving settings:", error);
+    }
+  };
+
+  const fetchWelcomeSettings = async () => {
+    try {
+      const { data } = await api.get(`/welcome/${guildId}`);
+      if (data) {
+        setSelectedWelcomeChannel(data.channelId || "");
+        setWelcomeMessage(data.message || "Welcome to {server}, {user}! 🎉");
+        setWelcomeEnabled(!!data.channelId);
+        console.log("Welcome settings fetched:", data);
+      }
+    } catch (error) {
+      console.error("Error fetching welcome settings:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchWelcomeSettings();
+  }, [guildId]);
 
   return (
     <div className="space-y-6">
@@ -110,10 +147,10 @@ const WelcomeComponent = () => {
                 </div>
                 <p className="text-white">
                   {welcomeMessage
-                    .replace("{user}", "@NewUser")
-                    .replace("{server}", "Your Server")
+                    .replace("{user}", `@${user?.username}`)
+                    .replace("{server}", `${guild?.name}`)
                     .replace("{membercount}", "1,234")
-                    .replace("{username}", "NewUser")}
+                    .replace("{username}", `${user?.username}`)}
                 </p>
               </div>
             </div>
@@ -312,7 +349,10 @@ const WelcomeComponent = () => {
 
       {/* Save Button */}
       <div className="flex justify-end">
-        <button className="glass-button px-8 py-3 text-white hover:text-pink-400 font-semibold transition-all duration-300 group">
+        <button
+          className="glass-button px-8 py-3 text-white hover:text-pink-400 font-semibold transition-all duration-300 group"
+          onClick={saveSettings}
+        >
           <i className="bx bx-save mr-2 group-hover:scale-110 transition-transform duration-300"></i>
           Save Settings
         </button>
