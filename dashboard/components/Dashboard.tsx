@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 
 import BotSettings from "./BotSettings";
 import CommandsComponent from "./Commands";
-import WebhooksComponent from "./Weblogs";
+import WebhooksComponent from "./Webhooks";
 import AutomodComponent from "./Automod";
 import LoggingComponent from "./Logging";
 import GameAlertComponent from "./Gamealerts";

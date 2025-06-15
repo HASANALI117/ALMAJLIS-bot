@@ -1,6 +1,6 @@
 // import React, { useState } from "react";
 
-const WebLogsComponent = () => {
+const WebHooksComponent = () => {
   // const [logEvents, setLogEvents] = useState([
   //   {
   //     type: "info",
@@ -298,4 +298,4 @@ const WebLogsComponent = () => {
   );
 };
 
-export default WebLogsComponent;
+export default WebHooksComponent;
