@@ -1,11 +1,19 @@
+"use client";
+
+import { useParams, usePathname } from "next/navigation";
 import { sidebarMenu } from "@/utils/constants";
+import Link from "next/link";
 
-type SidebarMenuProps = {
-  activeSection: string;
-  setActiveSection: (section: string) => void;
-};
+const Sidebar = () => {
+  const { guildId } = useParams();
+  const pathname = usePathname();
 
-const Sidebar = ({ activeSection, setActiveSection }: SidebarMenuProps) => {
+  const getActiveSection = () => {
+    const segments = pathname.split("/");
+    return segments[segments.length - 1] || "bot-settings";
+  };
+
+  const activeSection = getActiveSection();
   return (
     <div className="w-64 glass-sidebar flex-shrink-0 overflow-y-auto glass-scroll border-r border-white/10">
       <div className="p-4">
@@ -32,9 +40,9 @@ const Sidebar = ({ activeSection, setActiveSection }: SidebarMenuProps) => {
               {/* Menu Items */}
               <div className="space-y-1">
                 {section.links.map((link) => (
-                  <button
+                  <Link
                     key={link.key}
-                    onClick={() => setActiveSection(link.key)}
+                    href={`/dashboard/${guildId}/${link.key}`}
                     className={`w-full px-4 py-3 flex items-center text-sm transition-all duration-300 rounded-xl group relative overflow-hidden ${
                       activeSection === link.key
                         ? "glass-button text-white bg-white/15 border-white/30 text-glow-blue"
@@ -69,37 +77,13 @@ const Sidebar = ({ activeSection, setActiveSection }: SidebarMenuProps) => {
                       </span>
                     )}
 
-                    {/* Active indicator */}
-                    {activeSection === link.key && (
-                      <div className="absolute right-2 top-1/2 transform -translate-y-1/2 w-2 h-2 bg-blue-400 rounded-full pulse-glow"></div>
-                    )}
-
                     {/* Hover effect */}
                     <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
-                  </button>
+                  </Link>
                 ))}
               </div>
             </div>
           ))}
-        </div>
-
-        {/* Bottom decoration */}
-        <div className="mt-8 pt-6 border-t border-white/10">
-          <div className="glass-card p-4 text-center">
-            <div className="w-12 h-12 mx-auto mb-3 glass-button rounded-full flex items-center justify-center">
-              <i className="bx bx-support text-xl text-blue-400"></i>
-            </div>
-            <h4 className="text-sm font-semibold text-white/80 mb-1">
-              Need Help?
-            </h4>
-            <p className="text-xs text-white/60 mb-3">
-              Check our documentation
-            </p>
-            <button className="glass-button w-full py-2 px-3 text-xs text-white/80 hover:text-white transition-colors duration-300">
-              <i className="bx bx-help-circle mr-1"></i>
-              Support
-            </button>
-          </div>
         </div>
       </div>
 

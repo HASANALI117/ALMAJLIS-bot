@@ -3,10 +3,22 @@
 import Link from "next/link";
 import Image from "next/image";
 import { navigation } from "@/utils/constants";
-import { useAuth } from "@/contexts";
+import { useAuth, useGuild } from "@/contexts";
+import Loading from "@/components/common/Loading";
 
-const Navbar = ({ guild }: { guild: any }) => {
+const Navbar = () => {
   const { user, loading } = useAuth();
+  const { guild } = useGuild();
+  console.log("Rendering Navbar", { user, guild });
+
+  if (loading) {
+    return (
+      <Loading
+        title="Loading Dashboard"
+        message="Preparing your server configuration..."
+      />
+    );
+  }
 
   return (
     <nav className="glass-nav sticky top-0 z-50 px-6 py-4">
