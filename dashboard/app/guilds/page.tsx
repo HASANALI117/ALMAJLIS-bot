@@ -1,7 +1,7 @@
 import GuildsList from "@/components/GuildsList";
 import { GuildsProvider } from "@/contexts/GuildsContext";
 
-const page = () => {
+const GuildsPage = () => {
   return (
     <GuildsProvider>
       <GuildsList />
@@ -9,4 +9,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default GuildsPage;

@@ -1,9 +1,7 @@
 import Dashboard from "@/components/Dashboard";
 
-const page = async ({ params }: { params: { guildId: string } }) => {
-  const { guildId } = params;
-
-  return <Dashboard guildId={guildId} />;
+const DashboardPage = async () => {
+  return <Dashboard />;
 };
 
-export default page;
+export default DashboardPage;

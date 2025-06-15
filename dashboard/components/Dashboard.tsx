@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 
 import BotSettings from "./BotSettings";
 import CommandsComponent from "./Commands";
@@ -17,11 +18,8 @@ import api from "@/utils/axios";
 import ComingSoon from "./ComingSoon";
 import { dashboardSections } from "@/utils/constants";
 
-interface DashboardProps {
-  guildId: string;
-}
-
-const Dashboard = ({ guildId }: DashboardProps) => {
+const Dashboard = () => {
+  const { guildId } = useParams();
   // Tracking which section is currently active
   const [activeSection, setActiveSection] = useState("bot-settings");
   const [guild, setGuild] = useState({});
@@ -53,7 +51,7 @@ const Dashboard = ({ guildId }: DashboardProps) => {
       automod: <AutomodComponent />,
       logging: <LoggingComponent />,
       "game-alert": <GameAlertComponent />,
-      welcome: <WelcomeComponent guildId={guildId} />,
+      welcome: <WelcomeComponent />,
       "reaction-roles": <ReactionRolesComponent />,
       // Add more coming soon features
       "music-bot": (
