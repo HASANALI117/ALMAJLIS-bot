@@ -130,9 +130,6 @@ const WelcomeComponent = () => {
               </h5>
               <div className="bg-discord-dark p-3 rounded">
                 <div className="flex items-center mb-2">
-                  {/* <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-2">
-                    <i className="bx bx-bot text-white text-sm"></i>
-                  </div> */}
                   <Image
                     src={"/js.jpg"}
                     alt="Bot Avatar"
@@ -226,9 +223,13 @@ const WelcomeComponent = () => {
               </h5>
               <div className="bg-discord-dark p-3 rounded">
                 <div className="flex items-center mb-2">
-                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-2">
-                    <i className="bx bx-bot text-white text-sm"></i>
-                  </div>
+                  <Image
+                    src={"/js.jpg"}
+                    alt="Bot Avatar"
+                    width={32}
+                    height={32}
+                    className="rounded-full mr-2"
+                  ></Image>
                   <span className="text-white font-medium">ALMAJLIS-BOT</span>
                   <span className="text-xs text-gray-400 ml-2">
                     Today at 12:00 PM
