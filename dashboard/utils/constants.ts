@@ -10,39 +10,49 @@ export const sidebarMenu = [
   {
     category: "SETTINGS",
     links: [
-      { key: "bot-settings", label: "Bot settings", icon: "⚙️" },
-      { key: "commands", label: "Commands", icon: "💬" },
-      { key: "webhooks", label: "Webhooks", icon: "🌐" },
+      { key: "bot-settings", label: "Bot settings", icon: "bx-cog" },
+      { key: "commands", label: "Commands", icon: "bx-terminal" },
+      { key: "webhooks", label: "Webhooks", icon: "bx-link-external" },
     ],
   },
   {
     category: "UTILITY",
     links: [
-      { key: "welcome", label: "Welcome", icon: "👋" },
-      { key: "reaction-roles", label: "Reaction roles", icon: "😀" },
-      { key: "levels", label: "Levels", icon: "⬆️", badge: "Premium" },
+      { key: "welcome", label: "Welcome", icon: "bx-door-open" },
+      { key: "reaction-roles", label: "Reaction roles", icon: "bx-happy-alt" },
+      {
+        key: "levels",
+        label: "Levels",
+        icon: "bx-trending-up",
+        badge: "Premium",
+      },
     ],
   },
   {
     category: "MODERATION",
     links: [
-      { key: "automod", label: "Automod", icon: "🤖" },
-      { key: "moderation", label: "Moderation", icon: "🛡️" },
-      { key: "logging", label: "Logging", icon: "📝" },
-      { key: "autoroles", label: "Autoroles", icon: "🔔" },
+      { key: "automod", label: "Automod", icon: "bx-bot" },
+      { key: "moderation", label: "Moderation", icon: "bx-shield-quarter" },
+      { key: "logging", label: "Logging", icon: "bx-history" },
+      { key: "autoroles", label: "Autoroles", icon: "bx-user-check" },
     ],
   },
   {
     category: "GAMING",
     links: [
-      { key: "game-alert", label: "Game Alert", icon: "🎮", badge: "NEW" },
+      {
+        key: "game-alert",
+        label: "Game Alert",
+        icon: "bx-joystick",
+        badge: "NEW",
+      },
     ],
   },
   {
     category: "FEEDS",
     links: [
-      { key: "twitch", label: "Twitch", icon: "📺" },
-      { key: "youtube", label: "Youtube", icon: "▶️" },
+      { key: "twitch", label: "Twitch", icon: "bxl-twitch" },
+      { key: "youtube", label: "Youtube", icon: "bxl-youtube" },
     ],
   },
 ];

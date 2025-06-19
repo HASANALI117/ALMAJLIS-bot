@@ -1,4 +1,4 @@
-import ComingSoon from "@/components/common/ComingSoon";
+import AutoroleComponent from "@/components/dashboard/Autorole";
 import HeaderComponent from "@/components/layout/Header";
 import React from "react";
 
@@ -6,10 +6,10 @@ const AutoRolesPage = () => {
   return (
     <>
       {/* Section Header */}
-      <HeaderComponent section="coming-soon" />
+      <HeaderComponent section="autoroles" />
       {/* Content */}
       <div className="space-y-6">
-        <ComingSoon />
+        <AutoroleComponent />
       </div>
     </>
   );

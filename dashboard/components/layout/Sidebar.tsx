@@ -55,15 +55,15 @@ const Sidebar = () => {
                     )}
 
                     {/* Icon */}
-                    <span
-                      className={`mr-3 text-lg relative z-10 transition-all duration-300 ${
+                    <i
+                      className={`bx ${
+                        link.icon
+                      } mr-3 text-lg relative z-10 transition-all duration-300 ${
                         activeSection === link.key
                           ? "text-blue-400"
                           : "text-white/60 group-hover:text-blue-400"
                       }`}
-                    >
-                      {link.icon}
-                    </span>
+                    ></i>
 
                     {/* Label */}
                     <span className="relative z-10 font-medium flex-1 text-left">
