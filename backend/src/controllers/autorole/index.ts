@@ -15,7 +15,7 @@ export const getAutoroleSettingsController = async (
     }
 
     res.json({
-      enabled: true,
+      enabled: settings.enabled,
       roleId: settings.roleId,
     });
   } catch (error: any) {
