@@ -5,6 +5,7 @@ export type PartialGuild = {
   owner: boolean;
   permissions: string;
   features: string[];
+  roles?: Role[];
 };
 
 export type DiscordUser = {
@@ -34,4 +35,20 @@ export type Channel = {
     deny: string;
   }>;
   nsfw?: boolean;
+};
+
+export type Role = {
+  id: string;
+  name: string;
+  color: number;
+  hoist: boolean;
+  position: number;
+  permissions: string;
+  managed: boolean;
+  mentionable: boolean;
+};
+
+export type AutoroleSettings = {
+  enabled: boolean;
+  roleId: string | null;
 };
