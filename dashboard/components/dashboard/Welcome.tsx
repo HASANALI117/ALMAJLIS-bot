@@ -18,6 +18,17 @@ const WelcomeComponent = () => {
   const [welcomeMessage, setWelcomeMessage] = useState(
     "Welcome to {server}, {user}! 🎉"
   );
+
+  // New embed states
+  const [useEmbed, setUseEmbed] = useState(false);
+  const [embedTitle, setEmbedTitle] = useState("Welcome!");
+  const [embedDescription, setEmbedDescription] = useState(
+    "Welcome to {server}, {user}! 🎉"
+  );
+  const [embedColor, setEmbedColor] = useState("#5865F2");
+  const [showThumbnail, setShowThumbnail] = useState(true);
+  const [footerText, setFooterText] = useState("Member #{membercount}");
+
   const [goodbyeMessage, setGoodbyeMessage] = useState(
     "Goodbye {user}, we'll miss you! 👋"
   );
@@ -29,13 +40,37 @@ const WelcomeComponent = () => {
     { placeholder: "{username}", description: "Username without mention" },
   ];
 
+  // Helper function to replace placeholders for preview
+  const replaceMessagePlaceholders = (text: string) => {
+    return text
+      .replace("{user}", `@${user?.username}`)
+      .replace("{server}", `${guild?.name}`)
+      .replace("{membercount}", "1,234")
+      .replace("{username}", `${user?.username}`);
+  };
+
   const saveSettings = async () => {
     try {
-      const { data } = await api.post(`/welcome/${guildId}`, {
+      const payload = {
         guildId,
         channelId: selectedWelcomeChannel,
-        message: welcomeMessage,
-      });
+        message: useEmbed ? null : welcomeMessage,
+        useEmbed,
+        embed: useEmbed
+          ? {
+              title: embedTitle,
+              description: embedDescription,
+              color: embedColor,
+              thumbnail: showThumbnail,
+              footer: {
+                text: footerText,
+                iconURL: null,
+              },
+            }
+          : null,
+      };
+
+      const { data } = await api.post(`/welcome/${guildId}`, payload);
       console.log("Settings saved:", data);
     } catch (error) {
       console.error("Error saving settings:", error);
@@ -47,8 +82,22 @@ const WelcomeComponent = () => {
       const { data } = await api.get(`/welcome/${guildId}`);
       if (data) {
         setSelectedWelcomeChannel(data.channelId || "");
-        setWelcomeMessage(data.message || "Welcome to {server}, {user}! 🎉");
         setWelcomeEnabled(!!data.channelId);
+
+        // Load embed or message settings properly
+        if (data.useEmbed && data.embed) {
+          setUseEmbed(true);
+          setEmbedTitle(data.embed.title || "Welcome!");
+          setEmbedDescription(
+            data.embed.description || "Welcome to {server}, {user}! 🎉"
+          );
+          setEmbedColor(data.embed.color || "#5865F2");
+          setShowThumbnail(data.embed.thumbnail !== false);
+          setFooterText(data.embed.footer?.text || "Member #{membercount}");
+        } else {
+          setUseEmbed(false);
+          setWelcomeMessage(data.message || "Welcome to {server}, {user}! 🎉");
+        }
         console.log("Welcome settings fetched:", data);
       }
     } catch (error) {
@@ -111,17 +160,148 @@ const WelcomeComponent = () => {
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-white/80 mb-2">
-                Welcome Message
+            {/* Message Type Toggle */}
+            <div className="flex items-center space-x-4 mb-4">
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  name="messageType"
+                  checked={!useEmbed}
+                  onChange={() => setUseEmbed(false)}
+                  className="sr-only"
+                />
+                <div
+                  className={`glass-button px-4 py-2 transition-all duration-300 ${
+                    !useEmbed
+                      ? "bg-green-500/20 text-green-400"
+                      : "text-white/70"
+                  }`}
+                >
+                  <i className="bx bx-message mr-2"></i>
+                  Simple Message
+                </div>
               </label>
-              <textarea
-                value={welcomeMessage}
-                onChange={(e) => setWelcomeMessage(e.target.value)}
-                className="w-full glass-button px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all duration-300 h-24"
-                placeholder="Enter your welcome message..."
-              />
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  name="messageType"
+                  checked={useEmbed}
+                  onChange={() => setUseEmbed(true)}
+                  className="sr-only"
+                />
+                <div
+                  className={`glass-button px-4 py-2 transition-all duration-300 ${
+                    useEmbed ? "bg-blue-500/20 text-blue-400" : "text-white/70"
+                  }`}
+                >
+                  <i className="bx bx-card mr-2"></i>
+                  Rich Embed
+                </div>
+              </label>
             </div>
+
+            {!useEmbed ? (
+              <div>
+                <label className="block text-sm font-medium text-white/80 mb-2">
+                  Welcome Message
+                </label>
+                <textarea
+                  value={welcomeMessage}
+                  onChange={(e) => setWelcomeMessage(e.target.value)}
+                  className="w-full glass-button px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all duration-300 h-24"
+                  placeholder="Enter your welcome message..."
+                />
+              </div>
+            ) : (
+              // Embed Configuration
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-white/80 mb-2">
+                      Embed Title
+                    </label>
+                    <input
+                      type="text"
+                      value={embedTitle}
+                      onChange={(e) => setEmbedTitle(e.target.value)}
+                      className="w-full glass-button px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300"
+                      placeholder="Welcome!"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-white/80 mb-2">
+                      Embed Color
+                    </label>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="color"
+                        value={embedColor}
+                        onChange={(e) => setEmbedColor(e.target.value)}
+                        className="w-12 h-10 rounded glass-button border-none"
+                      />
+                      <input
+                        type="text"
+                        value={embedColor}
+                        onChange={(e) => setEmbedColor(e.target.value)}
+                        className="flex-1 glass-button px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300"
+                        placeholder="#5865F2"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-white/80 mb-2">
+                    Embed Description
+                  </label>
+                  <textarea
+                    value={embedDescription}
+                    onChange={(e) => setEmbedDescription(e.target.value)}
+                    className="w-full glass-button px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300 h-24"
+                    placeholder="Welcome to {server}, {user}! 🎉"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-white/80 mb-2">
+                      Footer Text
+                    </label>
+                    <input
+                      type="text"
+                      value={footerText}
+                      onChange={(e) => setFooterText(e.target.value)}
+                      className="w-full glass-button px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300"
+                      placeholder="Member #{membercount}"
+                    />
+                  </div>
+                  <div className="flex items-center space-x-4 pt-8">
+                    <label className="flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={showThumbnail}
+                        onChange={(e) => setShowThumbnail(e.target.checked)}
+                        className="sr-only"
+                      />
+                      <div
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 ${
+                          showThumbnail ? "bg-blue-500" : "bg-gray-600"
+                        }`}
+                      >
+                        <span
+                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${
+                            showThumbnail ? "translate-x-6" : "translate-x-1"
+                          }`}
+                        />
+                      </div>
+                      <span className="ml-2 text-white/80">
+                        Show User Avatar
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Message Preview */}
             <div className="glass-button p-4 border border-green-500/30">
@@ -142,13 +322,53 @@ const WelcomeComponent = () => {
                     Today at 12:00 PM
                   </span>
                 </div>
-                <p className="text-white">
-                  {welcomeMessage
-                    .replace("{user}", `@${user?.username}`)
-                    .replace("{server}", `${guild?.name}`)
-                    .replace("{membercount}", "1,234")
-                    .replace("{username}", `${user?.username}`)}
-                </p>
+
+                {!useEmbed ? (
+                  // Simple message preview
+                  <p className="text-white ml-13">
+                    {replaceMessagePlaceholders(welcomeMessage)}
+                  </p>
+                ) : (
+                  // Embed preview
+                  <div className="ml-13">
+                    <div
+                      className="border-l-4 bg-gray-800/50 rounded p-4 max-w-md"
+                      style={{ borderLeftColor: embedColor }}
+                    >
+                      {embedTitle && (
+                        <h3 className="text-white font-semibold text-lg mb-2">
+                          {replaceMessagePlaceholders(embedTitle)}
+                        </h3>
+                      )}
+
+                      <div className="flex items-start">
+                        <div className="flex-1">
+                          {embedDescription && (
+                            <p className="text-gray-300 mb-3">
+                              {replaceMessagePlaceholders(embedDescription)}
+                            </p>
+                          )}
+
+                          {footerText && (
+                            <div className="text-xs text-gray-400 mt-2">
+                              {replaceMessagePlaceholders(footerText)}
+                            </div>
+                          )}
+                        </div>
+
+                        {showThumbnail && user?.avatar && (
+                          <Image
+                            src={`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`}
+                            alt="User Avatar"
+                            width={80}
+                            height={80}
+                            className="rounded-full ml-4"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -236,11 +456,7 @@ const WelcomeComponent = () => {
                   </span>
                 </div>
                 <p className="text-white">
-                  {goodbyeMessage
-                    .replace("{user}", "LeftUser")
-                    .replace("{server}", "Your Server")
-                    .replace("{membercount}", "1,233")
-                    .replace("{username}", "LeftUser")}
+                  {replaceMessagePlaceholders(goodbyeMessage)}
                 </p>
               </div>
             </div>
