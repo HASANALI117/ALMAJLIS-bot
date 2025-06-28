@@ -6,6 +6,7 @@ import api from "@/utils/axios";
 import { AutoroleSettings, Role } from "@/utils/types";
 import { useGuild } from "@/contexts";
 import Loading from "../common/Loading";
+import SaveButton from "../ui/SaveButton";
 
 const AutoroleComponent = () => {
   const { guildId } = useParams();
@@ -171,15 +172,7 @@ const AutoroleComponent = () => {
       </div>
 
       {/* Save Button */}
-      <div className="flex justify-end">
-        <button
-          onClick={saveSettings}
-          className="glass-button px-8 py-3 text-white hover:text-blue-400 font-semibold transition-all duration-300 group"
-        >
-          <i className="bx bx-save mr-2 group-hover:scale-110 transition-transform duration-300"></i>
-          Save Settings
-        </button>
-      </div>
+      <SaveButton handleSave={saveSettings} loading={loading} />
     </div>
   );
 };
