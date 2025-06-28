@@ -6,11 +6,13 @@ import ChannelSelect from "../common/ChannelSelect";
 import api from "@/utils/axios";
 import { useParams } from "next/navigation";
 import { useAuth, useGuild } from "@/contexts";
+import SaveButton from "../ui/SaveButton";
 
 const WelcomeComponent = () => {
   const { guildId } = useParams();
   const { guild } = useGuild();
   const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   const [welcomeEnabled, setWelcomeEnabled] = useState(true);
   const [goodbyeEnabled, setGoodbyeEnabled] = useState(false);
   const [selectedWelcomeChannel, setSelectedWelcomeChannel] = useState("");
@@ -50,6 +52,7 @@ const WelcomeComponent = () => {
   };
 
   const saveSettings = async () => {
+    setIsLoading(true);
     try {
       const payload = {
         guildId,
@@ -74,6 +77,8 @@ const WelcomeComponent = () => {
       console.log("Settings saved:", data);
     } catch (error) {
       console.error("Error saving settings:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -151,12 +156,6 @@ const WelcomeComponent = () => {
                   label="Welcome Channel"
                   placeholder="Select a channel..."
                 />
-              </div>
-              <div className="flex items-end">
-                <button className="glass-button px-6 py-3 text-white hover:text-green-400 font-medium transition-all duration-300 group">
-                  <i className="bx bx-test-tube mr-2 group-hover:scale-110 transition-transform duration-300"></i>
-                  Test Message
-                </button>
               </div>
             </div>
 
@@ -503,77 +502,8 @@ const WelcomeComponent = () => {
         </div>
       </div>
 
-      {/* Advanced Settings */}
-      <div className="glass-card p-6">
-        <div className="flex items-center mb-4">
-          <div className="glass-button p-2 rounded-full mr-3">
-            <i className="bx bx-cog text-purple-400"></i>
-          </div>
-          <div>
-            <h4 className="text-lg font-semibold text-white">
-              Advanced Settings
-            </h4>
-            <p className="text-sm text-white/60">
-              Additional welcome/goodbye options
-            </p>
-          </div>
-        </div>
-
-        <div className="space-y-3">
-          {[
-            { label: "Delete message after 30 seconds", enabled: false },
-            { label: "Send message as DM to user", enabled: false },
-            { label: "Include server invite link", enabled: true },
-            { label: "Show user avatar in message", enabled: true },
-            { label: "Auto-assign default role", enabled: false },
-          ].map((setting, index) => (
-            <div
-              key={index}
-              className="glass-button p-3 flex items-center justify-between"
-            >
-              <span className="text-white/80">{setting.label}</span>
-              <button
-                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors duration-300 ${
-                  setting.enabled ? "bg-green-500" : "bg-gray-600"
-                }`}
-              >
-                <span
-                  className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform duration-300 ${
-                    setting.enabled ? "translate-x-5" : "translate-x-1"
-                  }`}
-                />
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="glass-card p-4 text-center">
-          <div className="text-2xl font-bold text-green-400 mb-1">24</div>
-          <div className="text-sm text-white/60">Members Welcomed Today</div>
-        </div>
-        <div className="glass-card p-4 text-center">
-          <div className="text-2xl font-bold text-orange-400 mb-1">3</div>
-          <div className="text-sm text-white/60">Members Left Today</div>
-        </div>
-        <div className="glass-card p-4 text-center">
-          <div className="text-2xl font-bold text-blue-400 mb-1">1,847</div>
-          <div className="text-sm text-white/60">Total Members</div>
-        </div>
-      </div>
-
       {/* Save Button */}
-      <div className="flex justify-end">
-        <button
-          className="glass-button px-8 py-3 text-white hover:text-pink-400 font-semibold transition-all duration-300 group"
-          onClick={saveSettings}
-        >
-          <i className="bx bx-save mr-2 group-hover:scale-110 transition-transform duration-300"></i>
-          Save Settings
-        </button>
-      </div>
+      <SaveButton handleSave={saveSettings} loading={isLoading} />
     </div>
   );
 };
