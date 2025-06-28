@@ -22,7 +22,8 @@ export const setWelcomeSettingsController = async (
   res: Response
 ) => {
   try {
-    const { guildId, channelId, message } = req.body;
+    const { guildId, channelId, message, useEmbed, embed } = req.body;
+
     if (!guildId || !channelId) {
       return res
         .status(400)
@@ -31,12 +32,22 @@ export const setWelcomeSettingsController = async (
 
     const response = await WelcomeChannel.findOneAndUpdate(
       { guildId },
-      { guildId, channelId, message: message || null },
+      {
+        guildId,
+        channelId,
+        useEmbed: useEmbed || false,
+        embed: useEmbed ? embed : null, // Clear embed when NOT using embed
+        message: useEmbed ? null : message || null, // Clear message when using embed
+      },
       { upsert: true, new: true }
     );
 
-    res.json({ message: "Welcome channel set successfully", data: response });
+    res.json({
+      message: "Welcome settings saved successfully",
+      data: response,
+    });
   } catch (error: any) {
+    console.error("Error saving welcome settings:", error.message);
     res.status(500).json({ error: error.message });
   }
 };
