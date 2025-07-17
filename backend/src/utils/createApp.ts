@@ -13,7 +13,12 @@ export const createApp = (): Express => {
   //   Enable parser for JSON requests
   app.use(express.json());
   //   Enable CORS
-  app.use(cors({ origin: ["http://localhost:3000"], credentials: true }));
+  app.use(
+    cors({
+      origin: ["http://localhost:3000", "http://dashboard:3000"],
+      credentials: true,
+    })
+  );
   //   Enable cookie parsing
   app.use(cookieParser());
   //   Enable session management
