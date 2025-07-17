@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "docker-compose up --build",
+    "devd": "docker-compose up -d --build",
     "dev:detached": "docker-compose up -d --build",
     "dev:clean": "docker-compose up --build --force-recreate",
     "stop": "docker-compose down",
@@ -20,6 +21,8 @@
     "logs:bot": "docker-compose logs -f bot",
     "logs:mongodb": "docker-compose logs -f mongodb",
     "logs:mongo-express": "docker-compose logs -f mongo-express",
+    "logs:app": "docker-compose logs -f backend dashboard bot",
+    "logsa": "docker-compose logs -f backend dashboard bot",
     "shell:backend": "docker-compose exec backend sh",
     "shell:dashboard": "docker-compose exec dashboard sh",
     "shell:bot": "docker-compose exec bot sh",
