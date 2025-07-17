@@ -1,11 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import api from "@/utils/axios";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import SaveButton from "../ui/SaveButton";
+
+interface StatusConfig {
+  type: "playing" | "listening" | "watching" | "competing";
+  text: string;
+}
 
 const BotSettings = () => {
+  const { guildId } = useParams();
+  const [isLoading, setIsLoading] = useState(false);
   const [botName, setBotName] = useState("ALMAJLIS-BOT");
   const [prefixes, setPrefixes] = useState(["!", "?", "."]);
   const [newPrefix, setNewPrefix] = useState("");
+  const [status, setStatus] = useState<StatusConfig>({
+    type: "playing",
+    text: "Managing the peasants",
+  });
 
   const handleAddPrefix = () => {
     if (newPrefix && !prefixes.includes(newPrefix)) {
@@ -15,8 +29,61 @@ const BotSettings = () => {
   };
 
   const handleRemovePrefix = (prefix: string) => {
-    setPrefixes(prefixes.filter((p) => p !== prefix));
+    // Keep at least one prefix
+    if (prefixes.length > 1) {
+      setPrefixes(prefixes.filter((p) => p !== prefix));
+    }
   };
+
+  const updateStatus = (key: keyof StatusConfig, value: any) => {
+    setStatus((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const saveSettings = async () => {
+    setIsLoading(true);
+    try {
+      const payload = {
+        nickname: botName,
+        prefixes,
+        status,
+      };
+
+      const { data } = await api.post(`/bot-settings/${guildId}`, payload);
+      console.log("Bot settings saved:", data);
+
+      // Show success message
+      alert("Bot settings saved successfully!");
+    } catch (error) {
+      console.error("Error saving bot settings:", error);
+      alert("Failed to save bot settings. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchBotSettings = async () => {
+    try {
+      const { data } = await api.get(`/bot-settings/${guildId}`);
+      if (data) {
+        setBotName(data.nickname || "ALMAJLIS-BOT");
+        setPrefixes(data.prefixes || ["!", "?", "."]);
+        setStatus(
+          data.status || {
+            type: "playing",
+            text: "Managing the server",
+          }
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching bot settings:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (guildId) {
+      fetchBotSettings();
+    }
+  }, [guildId]);
 
   return (
     <div className="space-y-6">
@@ -45,10 +112,6 @@ const BotSettings = () => {
               className="flex-1 glass-button px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-white/30 transition-all duration-300"
               placeholder="Enter bot nickname"
             />
-            {/* <button className="glass-button px-6 py-3 text-white hover:text-blue-400 font-medium transition-all duration-300 group">
-            <i className="bx bx-check mr-2 group-hover:scale-110 transition-transform duration-300"></i>
-            Apply
-          </button> */}
           </div>
         </div>
 
@@ -73,11 +136,23 @@ const BotSettings = () => {
               <label className="block text-sm font-medium text-white/80 mb-2">
                 Status Type
               </label>
-              <select className="w-full glass-button px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all duration-300">
-                <option value="playing">Playing</option>
-                <option value="listening">Listening to</option>
-                <option value="watching">Watching</option>
-                <option value="competing">Competing in</option>
+              <select
+                value={status.type}
+                onChange={(e) => updateStatus("type", e.target.value)}
+                className="w-full glass-button px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all duration-300"
+              >
+                <option value="playing" className="text-black">
+                  Playing
+                </option>
+                <option value="listening" className="text-black">
+                  Listening to
+                </option>
+                <option value="watching" className="text-black">
+                  Watching
+                </option>
+                <option value="competing" className="text-black">
+                  Competing in
+                </option>
               </select>
             </div>
             <div>
@@ -86,9 +161,10 @@ const BotSettings = () => {
               </label>
               <input
                 type="text"
+                value={status.text}
+                onChange={(e) => updateStatus("text", e.target.value)}
                 className="w-full glass-button px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all duration-300"
                 placeholder="Enter activity text"
-                defaultValue="Managing the server"
               />
             </div>
           </div>
@@ -153,15 +229,23 @@ const BotSettings = () => {
             </div>
           ))}
         </div>
+
+        {/* Status Preview */}
+        <div className="mt-6 glass-button p-4 border border-green-500/30">
+          <h5 className="text-sm font-medium text-white/80 mb-2">
+            Status Preview:
+          </h5>
+          <div className="flex items-center text-white/70">
+            <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+            <span className="capitalize">{status.type}</span>
+            <span className="mx-1">:</span>
+            <span>{status.text}</span>
+          </div>
+        </div>
       </div>
 
       {/* Save Button */}
-      <div className="flex justify-end">
-        <button className="glass-button px-8 py-3 text-white hover:text-blue-400 font-semibold transition-all duration-300 group">
-          <i className="bx bx-save mr-2 group-hover:scale-110 transition-transform duration-300"></i>
-          Save Settings
-        </button>
-      </div>
+      <SaveButton handleSave={saveSettings} loading={isLoading} />
     </div>
   );
 };
