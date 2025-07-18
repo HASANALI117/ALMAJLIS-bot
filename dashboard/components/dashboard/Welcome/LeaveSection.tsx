@@ -38,7 +38,7 @@ const LeaveSection = () => {
     if (guildId) {
       fetchLeaveSettings();
     }
-  }, [guildId, fetchLeaveSettings]);
+  }, [guildId]);
 
   return (
     <div className="glass-card p-6">

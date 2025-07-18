@@ -38,7 +38,7 @@ const WelcomeSection = () => {
     if (guildId) {
       fetchWelcomeSettings();
     }
-  }, [guildId, fetchWelcomeSettings]);
+  }, [guildId]);
 
   return (
     <div className="glass-card p-6">
