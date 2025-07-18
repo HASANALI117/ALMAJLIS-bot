@@ -13,15 +13,14 @@ const WelcomeComponent = () => {
   const { guild } = useGuild();
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+
+  // Welcome message states
   const [welcomeEnabled, setWelcomeEnabled] = useState(true);
-  const [goodbyeEnabled, setGoodbyeEnabled] = useState(false);
   const [selectedWelcomeChannel, setSelectedWelcomeChannel] = useState("");
-  const [selectedGoodbyeChannel, setSelectedGoodbyeChannel] = useState("");
   const [welcomeMessage, setWelcomeMessage] = useState(
     "Welcome to {server}, {user}! 🎉"
   );
-
-  // New embed states
+  // Welcome embed states
   const [useEmbed, setUseEmbed] = useState(false);
   const [embedTitle, setEmbedTitle] = useState("Welcome!");
   const [embedDescription, setEmbedDescription] = useState(
@@ -31,8 +30,21 @@ const WelcomeComponent = () => {
   const [showThumbnail, setShowThumbnail] = useState(true);
   const [footerText, setFooterText] = useState("Member #{membercount}");
 
-  const [goodbyeMessage, setGoodbyeMessage] = useState(
+  // Leave message states
+  const [leaveEnabled, setLeaveEnabled] = useState(false);
+  const [selectedLeaveChannel, setSelectedLeaveChannel] = useState("");
+  const [leaveMessage, setLeaveMessage] = useState(
     "Goodbye {user}, we'll miss you! 👋"
+  );
+  const [useLeaveEmbed, setUseLeaveEmbed] = useState(false);
+  const [leaveEmbedTitle, setLeaveEmbedTitle] = useState("Goodbye!");
+  const [leaveEmbedDescription, setLeaveEmbedDescription] = useState(
+    "Goodbye {user}, we hope to see you again!"
+  );
+  const [leaveEmbedColor, setLeaveEmbedColor] = useState("#FF0000");
+  const [showLeaveThumbnail, setShowLeaveThumbnail] = useState(true);
+  const [leaveFooterText, setLeaveFooterText] = useState(
+    "Member #{membercount}"
   );
 
   const placeholders = [
@@ -51,7 +63,7 @@ const WelcomeComponent = () => {
       .replace("{username}", `${user?.username}`);
   };
 
-  const saveSettings = async () => {
+  const saveWelcomeSettings = async () => {
     setIsLoading(true);
     try {
       const payload = {
@@ -74,9 +86,41 @@ const WelcomeComponent = () => {
       };
 
       const { data } = await api.post(`/welcome/${guildId}`, payload);
-      console.log("Settings saved:", data);
+      console.log("Welcome settings saved:", data);
     } catch (error) {
-      console.error("Error saving settings:", error);
+      console.error("Error saving welcome settings:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const saveLeaveSettings = async () => {
+    setIsLoading(true);
+    try {
+      const payload = {
+        guildId,
+        channelId: selectedLeaveChannel,
+        enabled: leaveEnabled,
+        message: useLeaveEmbed ? null : leaveMessage,
+        useEmbed: useLeaveEmbed,
+        embed: useLeaveEmbed
+          ? {
+              title: leaveEmbedTitle,
+              description: leaveEmbedDescription,
+              color: leaveEmbedColor,
+              thumbnail: showLeaveThumbnail,
+              footer: {
+                text: leaveFooterText,
+                iconURL: null,
+              },
+            }
+          : null,
+      };
+
+      const { data } = await api.post(`/leave/${guildId}`, payload);
+      console.log("Leave settings saved:", data);
+    } catch (error) {
+      console.error("Error saving leave settings:", error);
     } finally {
       setIsLoading(false);
     }
@@ -110,8 +154,43 @@ const WelcomeComponent = () => {
     }
   };
 
+  const fetchLeaveSettings = async () => {
+    try {
+      const { data } = await api.get(`/leave/${guildId}`);
+      if (data) {
+        setSelectedLeaveChannel(data.channelId || "");
+        setLeaveEnabled(data.enabled !== false);
+
+        if (data.useEmbed && data.embed) {
+          setUseLeaveEmbed(true);
+          setLeaveEmbedTitle(data.embed.title || "Goodbye!");
+          setLeaveEmbedDescription(
+            data.embed.description ||
+              "Goodbye {user}, we hope to see you again!"
+          );
+          setLeaveEmbedColor(data.embed.color || "#FF0000");
+          setShowLeaveThumbnail(data.embed.thumbnail !== false);
+          setLeaveFooterText(
+            data.embed.footer?.text || "Member #{membercount}"
+          );
+        } else {
+          setUseLeaveEmbed(false);
+          setLeaveMessage(
+            data.message || "Goodbye {user}, we hope to see you again!"
+          );
+        }
+        console.log("Leave settings fetched:", data);
+      }
+    } catch (error) {
+      console.error("Error fetching leave settings:", error);
+    }
+  };
+
   useEffect(() => {
-    fetchWelcomeSettings();
+    if (guildId) {
+      fetchWelcomeSettings();
+      fetchLeaveSettings();
+    }
   }, [guildId]);
 
   return (
@@ -177,7 +256,7 @@ const WelcomeComponent = () => {
                   }`}
                 >
                   <i className="bx bx-message mr-2"></i>
-                  Simple Message
+                  Message
                 </div>
               </label>
               <label className="flex items-center cursor-pointer">
@@ -194,7 +273,7 @@ const WelcomeComponent = () => {
                   }`}
                 >
                   <i className="bx bx-card mr-2"></i>
-                  Rich Embed
+                  Embed
                 </div>
               </label>
             </div>
@@ -370,6 +449,9 @@ const WelcomeComponent = () => {
                 )}
               </div>
             </div>
+
+            {/* Save Button */}
+            <SaveButton handleSave={saveWelcomeSettings} loading={isLoading} />
           </div>
         )}
       </div>
@@ -391,49 +473,178 @@ const WelcomeComponent = () => {
             </div>
           </div>
           <button
-            onClick={() => setGoodbyeEnabled(!goodbyeEnabled)}
+            onClick={() => setLeaveEnabled(!leaveEnabled)}
             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 ${
-              goodbyeEnabled ? "bg-green-500" : "bg-gray-600"
+              leaveEnabled ? "bg-green-500" : "bg-gray-600"
             }`}
           >
             <span
               className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${
-                goodbyeEnabled ? "translate-x-6" : "translate-x-1"
+                leaveEnabled ? "translate-x-6" : "translate-x-1"
               }`}
             />
           </button>
         </div>
 
-        {goodbyeEnabled && (
+        {leaveEnabled && (
           <div className="space-y-4 p-4 glass-dark rounded-lg">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <ChannelSelect
-                  value={selectedGoodbyeChannel}
-                  onChange={setSelectedGoodbyeChannel}
-                  label="Goodbye Channel"
-                  placeholder="Select a channel..."
-                />
-              </div>
-              <div className="flex items-end">
-                <button className="glass-button px-6 py-3 text-white hover:text-orange-400 font-medium transition-all duration-300 group">
-                  <i className="bx bx-test-tube mr-2 group-hover:scale-110 transition-transform duration-300"></i>
-                  Test Message
-                </button>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-white/80 mb-2">
-                Goodbye Message
-              </label>
-              <textarea
-                value={goodbyeMessage}
-                onChange={(e) => setGoodbyeMessage(e.target.value)}
-                className="w-full glass-button px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300 h-24"
-                placeholder="Enter your goodbye message..."
+              <ChannelSelect
+                value={selectedLeaveChannel}
+                onChange={setSelectedLeaveChannel}
+                label="Leave Channel"
+                placeholder="Select a channel..."
               />
             </div>
+
+            {/* Message Type Toggle */}
+            <div className="flex items-center space-x-4 mb-4">
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  name="messageType"
+                  checked={!useLeaveEmbed}
+                  onChange={() => setUseLeaveEmbed(false)}
+                  className="sr-only"
+                />
+                <div
+                  className={`glass-button px-4 py-2 transition-all duration-300 ${
+                    !useLeaveEmbed
+                      ? "bg-green-500/20 text-green-400"
+                      : "text-white/70"
+                  }`}
+                >
+                  <i className="bx bx-message mr-2"></i>
+                  Message
+                </div>
+              </label>
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  name="messageType"
+                  checked={useLeaveEmbed}
+                  onChange={() => setUseLeaveEmbed(true)}
+                  className="sr-only"
+                />
+                <div
+                  className={`glass-button px-4 py-2 transition-all duration-300 ${
+                    useLeaveEmbed
+                      ? "bg-blue-500/20 text-blue-400"
+                      : "text-white/70"
+                  }`}
+                >
+                  <i className="bx bx-card mr-2"></i>
+                  Embed
+                </div>
+              </label>
+            </div>
+
+            {!useLeaveEmbed ? (
+              <div>
+                <label className="block text-sm font-medium text-white/80 mb-2">
+                  Leave Message
+                </label>
+                <textarea
+                  value={leaveMessage}
+                  onChange={(e) => setLeaveMessage(e.target.value)}
+                  className="w-full glass-button px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300 h-24"
+                  placeholder="Enter your goodbye message..."
+                />
+              </div>
+            ) : (
+              // Embed Configuration
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-white/80 mb-2">
+                      Embed Title
+                    </label>
+                    <input
+                      type="text"
+                      value={leaveEmbedTitle}
+                      onChange={(e) => setLeaveEmbedTitle(e.target.value)}
+                      className="w-full glass-button px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300"
+                      placeholder="Welcome!"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-white/80 mb-2">
+                      Embed Color
+                    </label>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="color"
+                        value={leaveEmbedColor}
+                        onChange={(e) => setLeaveEmbedColor(e.target.value)}
+                        className="w-12 h-10 rounded glass-button border-none"
+                      />
+                      <input
+                        type="text"
+                        value={leaveEmbedColor}
+                        onChange={(e) => setLeaveEmbedColor(e.target.value)}
+                        className="flex-1 glass-button px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300"
+                        placeholder="#5865F2"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-white/80 mb-2">
+                    Embed Description
+                  </label>
+                  <textarea
+                    value={leaveEmbedDescription}
+                    onChange={(e) => setLeaveEmbedDescription(e.target.value)}
+                    className="w-full glass-button px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300 h-24"
+                    placeholder="Welcome to {server}, {user}! 🎉"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-white/80 mb-2">
+                      Footer Text
+                    </label>
+                    <input
+                      type="text"
+                      value={leaveFooterText}
+                      onChange={(e) => setLeaveFooterText(e.target.value)}
+                      className="w-full glass-button px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300"
+                      placeholder="Member #{membercount}"
+                    />
+                  </div>
+                  <div className="flex items-center space-x-4 pt-8">
+                    <label className="flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={showLeaveThumbnail}
+                        onChange={(e) =>
+                          setShowLeaveThumbnail(e.target.checked)
+                        }
+                        className="sr-only"
+                      />
+                      <div
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 ${
+                          showLeaveThumbnail ? "bg-blue-500" : "bg-gray-600"
+                        }`}
+                      >
+                        <span
+                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${
+                            showLeaveThumbnail
+                              ? "translate-x-6"
+                              : "translate-x-1"
+                          }`}
+                        />
+                      </div>
+                      <span className="ml-2 text-white/80">
+                        Show User Avatar
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Message Preview */}
             <div className="glass-button p-4 border border-orange-500/30">
@@ -454,11 +665,59 @@ const WelcomeComponent = () => {
                     Today at 12:00 PM
                   </span>
                 </div>
-                <p className="text-white">
-                  {replaceMessagePlaceholders(goodbyeMessage)}
-                </p>
+                {!useLeaveEmbed ? (
+                  // Simple message preview
+                  <p className="text-white ml-13">
+                    {replaceMessagePlaceholders(leaveMessage)}
+                  </p>
+                ) : (
+                  // Embed preview
+                  <div className="ml-13">
+                    <div
+                      className="border-l-4 bg-gray-800/50 rounded p-4 max-w-md"
+                      style={{ borderLeftColor: leaveEmbedColor }}
+                    >
+                      {leaveEmbedTitle && (
+                        <h3 className="text-white font-semibold text-lg mb-2">
+                          {replaceMessagePlaceholders(leaveEmbedTitle)}
+                        </h3>
+                      )}
+
+                      <div className="flex items-start">
+                        <div className="flex-1">
+                          {leaveEmbedDescription && (
+                            <p className="text-gray-300 mb-3">
+                              {replaceMessagePlaceholders(
+                                leaveEmbedDescription
+                              )}
+                            </p>
+                          )}
+
+                          {leaveFooterText && (
+                            <div className="text-xs text-gray-400 mt-2">
+                              {replaceMessagePlaceholders(leaveFooterText)}
+                            </div>
+                          )}
+                        </div>
+
+                        {showLeaveThumbnail && user?.avatar && (
+                          <Image
+                            src={`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`}
+                            alt="User Avatar"
+                            width={80}
+                            height={80}
+                            className="rounded-full ml-4"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
+
+            {/* Save Button */}
+            <SaveButton handleSave={saveLeaveSettings} loading={isLoading} />
           </div>
         )}
       </div>
@@ -501,9 +760,6 @@ const WelcomeComponent = () => {
           ))}
         </div>
       </div>
-
-      {/* Save Button */}
-      <SaveButton handleSave={saveSettings} loading={isLoading} />
     </div>
   );
 };
