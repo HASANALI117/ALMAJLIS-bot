@@ -12,8 +12,10 @@ export default async (member) => {
       guildId: member.guild.id,
     });
 
-    if (!welcomeSettings) {
-      console.log(`No welcome settings found for guild: ${member.guild.name}`);
+    if (!welcomeSettings || !welcomeSettings.enabled) {
+      console.log(
+        `Welcome settings are disabled for guild: ${member.guild.name}`
+      );
       return;
     }
 
