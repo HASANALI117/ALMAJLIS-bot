@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import WelcomeChannel from "../../models/WelcomeChannel";
+import { WelcomeSettings } from "../../models";
 
 export const getWelcomeSettingsController = async (
   req: Request,
@@ -8,7 +8,7 @@ export const getWelcomeSettingsController = async (
   try {
     const { guildId } = req.params;
 
-    const settings = await WelcomeChannel.findOne({ guildId });
+    const settings = await WelcomeSettings.findOne({ guildId });
 
     res.json(settings);
   } catch (error: any) {
@@ -30,7 +30,7 @@ export const setWelcomeSettingsController = async (
         .json({ error: "guildId and channelId are required" });
     }
 
-    const response = await WelcomeChannel.findOneAndUpdate(
+    const response = await WelcomeSettings.findOneAndUpdate(
       { guildId },
       {
         guildId,
@@ -59,7 +59,7 @@ export const deleteWelcomeSettingsController = async (
   const { guildId } = req.params;
 
   try {
-    await WelcomeChannel.findOneAndDelete({ guildId });
+    await WelcomeSettings.findOneAndDelete({ guildId });
     res.json({ message: "Welcome settings deleted successfully" });
   } catch (error: any) {
     console.error("Error deleting welcome settings:", error);

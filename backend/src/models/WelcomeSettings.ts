@@ -1,9 +1,10 @@
 import { Schema, model } from "mongoose";
 
-const welcomeChannelSchema = new Schema(
+const welcomeSettingsSchema = new Schema(
   {
     guildId: { type: String, required: true },
     channelId: { type: String, required: true, unique: true },
+    enabled: { type: Boolean, default: true },
     message: { type: String, default: null },
     useEmbed: { type: Boolean, default: false },
     embed: {
@@ -31,4 +32,4 @@ const welcomeChannelSchema = new Schema(
   { timestamps: true }
 );
 
-export default model("WelcomeChannel", welcomeChannelSchema);
+export default model("WelcomeSettings", welcomeSettingsSchema);
