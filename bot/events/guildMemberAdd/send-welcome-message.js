@@ -1,4 +1,4 @@
-import WelcomeChannel from "../../models/WelcomeChannel.js";
+import WelcomeSettings from "../../models/WelcomeSettings.js";
 import { EmbedBuilder } from "discord.js";
 
 export default async (member) => {
@@ -8,7 +8,7 @@ export default async (member) => {
     );
 
     // Fetch welcome settings from database
-    const welcomeSettings = await WelcomeChannel.findOne({
+    const welcomeSettings = await WelcomeSettings.findOne({
       guildId: member.guild.id,
     });
 
