@@ -7,7 +7,7 @@ export const useWelcomeSettings = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // Welcome message states
-  const [welcomeEnabled, setWelcomeEnabled] = useState(true);
+  const [welcomeEnabled, setWelcomeEnabled] = useState(false);
   const [selectedWelcomeChannel, setSelectedWelcomeChannel] = useState("");
   const [welcomeMessage, setWelcomeMessage] = useState(
     "Welcome to {server}, {user}! 🎉"

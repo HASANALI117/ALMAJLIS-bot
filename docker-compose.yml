@@ -77,7 +77,6 @@ services:
     volumes:
       - ./dashboard:/app
       - /app/node_modules
-      # - /app/.next
     depends_on:
       - backend
     networks:
