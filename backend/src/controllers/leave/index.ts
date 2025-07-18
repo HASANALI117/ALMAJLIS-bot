@@ -1,23 +1,23 @@
 import { Request, Response } from "express";
-import { WelcomeSettings } from "../../models";
+import { LeaveSettings } from "../../models";
 
-export const getWelcomeSettingsController = async (
+export const getLeaveSettingsController = async (
   req: Request,
   res: Response
 ) => {
   try {
     const { guildId } = req.params;
 
-    const settings = await WelcomeSettings.findOne({ guildId });
+    const settings = await LeaveSettings.findOne({ guildId });
 
     res.json(settings);
   } catch (error: any) {
-    console.error("Error fetching welcome settings:", error.message);
+    console.error("Error fetching leave settings:", error.message);
     res.status(500).json({ error: error.message });
   }
 };
 
-export const setWelcomeSettingsController = async (
+export const setLeaveSettingsController = async (
   req: Request,
   res: Response
 ) => {
@@ -30,7 +30,7 @@ export const setWelcomeSettingsController = async (
         .json({ error: "guildId and channelId are required" });
     }
 
-    const response = await WelcomeSettings.findOneAndUpdate(
+    const response = await LeaveSettings.findOneAndUpdate(
       { guildId },
       {
         guildId,
@@ -44,26 +44,26 @@ export const setWelcomeSettingsController = async (
     );
 
     res.json({
-      message: "Welcome settings saved successfully",
+      message: "Leave settings saved successfully",
       data: response,
     });
   } catch (error: any) {
-    console.error("Error saving welcome settings:", error.message);
+    console.error("Error saving leave settings:", error.message);
     res.status(500).json({ error: error.message });
   }
 };
 
-export const deleteWelcomeSettingsController = async (
+export const deleteLeaveSettingsController = async (
   req: Request,
   res: Response
 ) => {
   const { guildId } = req.params;
 
   try {
-    await WelcomeSettings.findOneAndDelete({ guildId });
-    res.json({ message: "Welcome settings deleted successfully" });
+    await LeaveSettings.findOneAndDelete({ guildId });
+    res.json({ message: "Leave settings deleted successfully" });
   } catch (error: any) {
-    console.error("Error deleting welcome settings:", error);
-    res.status(500).json({ error: "Failed to delete welcome settings" });
+    console.error("Error deleting leave settings:", error);
+    res.status(500).json({ error: "Failed to delete leave settings" });
   }
 };

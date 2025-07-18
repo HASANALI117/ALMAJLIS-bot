@@ -1,5 +1,6 @@
 import User from "./User";
 import AutoRole from "./AutoRole";
 import WelcomeSettings from "./WelcomeSettings";
+import LeaveSettings from "./LeaveSettings";
 
-export { User, AutoRole, WelcomeSettings };
+export { User, AutoRole, WelcomeSettings, LeaveSettings };
