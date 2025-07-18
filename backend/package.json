@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./dist/server.js",
-    "dev": "nodemon --exec \"node --import tsx/esm\" ./src/server.ts",
+    "dev": "nodemon --legacy-watch --exec \"node --import tsx/esm\" ./src/server.ts",
     "build": "tsc"
   },
   "keywords": [],

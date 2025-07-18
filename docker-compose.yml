@@ -72,10 +72,12 @@ services:
       NODE_ENV: development
       NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL}
       NEXT_PUBLIC_FRONTEND_URL: ${NEXT_PUBLIC_FRONTEND_URL}
+      CHOKIDAR_USEPOLLING: "true"
+      WATCHPACK_POLLING: "true"
     volumes:
       - ./dashboard:/app
       - /app/node_modules
-      - /app/.next
+      # - /app/.next
     depends_on:
       - backend
     networks:
