@@ -4,8 +4,9 @@ import {
   PermissionFlagsBits,
 } from "discord.js";
 import GameAlert from "../../models/GameAlert.js";
-import { STORES } from "../../utils/constants.js";
-import axios from "axios";
+import { ERROR_MESSAGES } from "../../utils/constants.js";
+import { getGameImage } from "../../services/steamImageService.js";
+import { createSearchResultEmbed } from "../../utils/embedBuilders.js";
 
 export const data = new SlashCommandBuilder()
   .setName("gamedeals")
@@ -258,7 +259,7 @@ async function handleSearchDeals(interaction, client) {
 
     if (games.length === 0) {
       return interaction.editReply({
-        content: `❌ Could not find a game named "${game}".`,
+        content: `${ERROR_MESSAGES.GAME_NOT_FOUND} "${game}".`,
       });
     }
 
@@ -267,77 +268,13 @@ async function handleSearchDeals(interaction, client) {
 
     if (deals.length === 0) {
       return interaction.editReply({
-        content: `📭 No current deals found for **${foundGame.external}**.`,
+        content: `${ERROR_MESSAGES.NO_DEALS_FOUND} **${foundGame.external}**.`,
       });
     }
 
     const bestDeal = deals[0];
-
-    // Get store info using STORES object directly
-    const bestStoreName =
-      STORES[bestDeal.storeID]?.storeName || "Unknown Store";
-    const storeLogoURL = STORES[bestDeal.storeID]?.images?.logo;
-    const storeIconURL = STORES[bestDeal.storeID]?.images?.icon;
-
-    // Helper function to get larger game image
-    async function getLargerGameImage(thumbUrl) {
-      if (!thumbUrl) return null;
-
-      try {
-        // Query Steam’s App Details API
-        const { data } = await axios.get(
-          `https://store.steampowered.com/api/appdetails`,
-          {
-            params: {
-              appids: foundGame.steamAppID,
-              l: "en", // or any locale you prefer
-            },
-            timeout: 5_000,
-          }
-        );
-
-        const body = data?.[foundGame.steamAppID];
-
-        if (body?.success && body.data.header_image) {
-          return body.data.header_image;
-        }
-      } catch (err) {
-        console.error(
-          `Steam API failed for app ${foundGame.steamAppID}:`,
-          err.message
-        );
-      }
-
-      // if any of the above fails, return the original thumbnail
-      return thumbUrl;
-    }
-
-    const gameImageUrl = await getLargerGameImage(foundGame.thumb);
-    const originalPrice = parseFloat(bestDeal.normalPrice);
-    const salePrice =
-      parseFloat(bestDeal.salePrice) == 0
-        ? "Free"
-        : parseFloat(bestDeal.salePrice);
-    const savings = Math.round(parseFloat(bestDeal.savings));
-    const dealDate = gameDealsService.formatDate(bestDeal.lastChange);
-
-    const embed = new EmbedBuilder()
-      .setTitle(foundGame.external)
-      .setDescription(
-        `~~$${originalPrice.toFixed(
-          2
-        )}~~ **${salePrice}** (${savings}% OFF)\n` +
-          `Last updated: ${dealDate}\n\n` +
-          `[**Open in browser ↗**](https://www.cheapshark.com/redirect?dealID=${bestDeal.dealID})`
-      )
-      .setThumbnail(storeLogoURL)
-      .setColor("#2F3136")
-      .setImage(gameImageUrl)
-      .setFooter({
-        text: `via cheapshark • © ${bestStoreName}`,
-        iconURL: "https://www.cheapshark.com/img/logo_image.png",
-      })
-      .setTimestamp();
+    const gameImageUrl = await getGameImage(foundGame.steamAppID);
+    const embed = createSearchResultEmbed(foundGame, bestDeal, gameImageUrl);
 
     await interaction.editReply({ embeds: [embed] });
   } catch (error) {

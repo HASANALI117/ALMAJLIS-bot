@@ -1,6 +1,7 @@
 import GameAlert from "../models/GameAlert.js";
 import { EmbedBuilder } from "discord.js";
 import axios from "axios";
+import { STORES } from "../utils/constants.js";
 
 class GameDealsService {
   constructor(client) {
@@ -18,19 +19,6 @@ class GameDealsService {
       headers: {
         "User-Agent": "ALMAJLIS-Bot/1.0",
       },
-    });
-  }
-
-  // Helper function to format exact date from Unix timestamp
-  formatDate(unixTimestamp) {
-    if (!unixTimestamp) return "Unknown";
-
-    const date = new Date(unixTimestamp * 1000);
-
-    return date.toLocaleDateString("en-US", {
-      year: "2-digit",
-      month: "2-digit",
-      day: "2-digit",
     });
   }
 
@@ -59,7 +47,6 @@ class GameDealsService {
           steamAppID: steamAppID,
           onSale: 1,
           sortBy: "Savings",
-          desc: 1,
         },
       });
       return data;
@@ -79,7 +66,6 @@ class GameDealsService {
           upperPrice: maxPrice,
           onSale: 1,
           sortBy: "Savings",
-          desc: 1,
           pageSize: 60,
         },
       });
@@ -178,7 +164,7 @@ class GameDealsService {
           },
           {
             name: "🛒 Store",
-            value: this.getStoreName(deal.storeID),
+            value: STORES[deal.storeID].storeName || "Unknown Store",
             inline: true,
           },
           {
