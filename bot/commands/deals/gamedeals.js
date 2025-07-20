@@ -251,30 +251,26 @@ async function handleListAlerts(interaction) {
 async function handleSearchDeals(interaction, client) {
   const game = interaction.options.getString("game");
 
-  await interaction.deferReply();
+  await interaction.deferReply({ ephemeral: true });
 
   try {
     const gameDealsService = client.gameDealsService;
-    const games = await gameDealsService.searchGame(game);
 
-    if (games.length === 0) {
-      return interaction.editReply({
-        content: `${ERROR_MESSAGES.GAME_NOT_FOUND} "${game}".`,
-      });
-    }
-
-    const foundGame = games[0];
-    const deals = await gameDealsService.getGameDeals(foundGame.steamAppID);
+    const deals = await gameDealsService.getGameDealsByTitle(game);
 
     if (deals.length === 0) {
       return interaction.editReply({
-        content: `${ERROR_MESSAGES.NO_DEALS_FOUND} **${foundGame.external}**.`,
+        content: `${ERROR_MESSAGES.NO_DEALS_FOUND} **${game}**.`,
       });
     }
 
     const bestDeal = deals[0];
-    const gameImageUrl = await getGameImage(foundGame.steamAppID);
-    const embed = createSearchResultEmbed(foundGame, bestDeal, gameImageUrl);
+
+    const gameImageUrl = bestDeal.steamAppID
+      ? await getGameImage(bestDeal.steamAppID)
+      : bestDeal.thumb;
+
+    const embed = createSearchResultEmbed(bestDeal, gameImageUrl);
 
     await interaction.editReply({ embeds: [embed] });
   } catch (error) {

@@ -2,7 +2,7 @@ import { EmbedBuilder } from "discord.js";
 import { formatDate, formatDealDescription } from "./formatters.js";
 import { STORES } from "./constants.js";
 
-export const createSearchResultEmbed = (game, deal, gameImageUrl = null) => {
+export const createSearchResultEmbed = (deal, gameImageUrl = null) => {
   const storeName = STORES[deal.storeID]?.storeName || "Unknown Store";
   const storeLogoURL =
     STORES[deal.storeID]?.images?.logo ||
@@ -18,7 +18,7 @@ export const createSearchResultEmbed = (game, deal, gameImageUrl = null) => {
   const dealDate = formatDate(deal.lastChange);
 
   const embed = new EmbedBuilder()
-    .setTitle(game.external)
+    .setTitle(deal.title)
     .setDescription(
       `${dealDescription}\n` +
         `Deal Rating: ${deal.dealRating}/10 ★\n` +

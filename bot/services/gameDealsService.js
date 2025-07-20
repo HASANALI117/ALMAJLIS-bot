@@ -59,6 +59,26 @@ class GameDealsService {
     }
   }
 
+  // Method that searches deals by title directly
+  async getGameDealsByTitle(title) {
+    try {
+      const { data } = await this.api.get("/deals", {
+        params: {
+          title: title,
+          onSale: 1,
+          sortBy: "Savings",
+        },
+      });
+      return data;
+    } catch (error) {
+      console.error(
+        "Error fetching game deals by title:",
+        error.response?.data || error.message
+      );
+      return [];
+    }
+  }
+
   async getAllDeals(maxPrice = 60, minDiscount = 50) {
     try {
       const { data } = await this.api.get("/deals", {
