@@ -1,7 +1,7 @@
-export const formatDate = (unixTimestamp) => {
-  if (!unixTimestamp) return "Unknown";
+export const formatDate = (isoString) => {
+  if (!isoString) return "Unknown";
 
-  const date = new Date(unixTimestamp * 1000);
+  const date = new Date(isoString);
   return date.toLocaleDateString("en-GB", {
     year: "numeric",
     month: "2-digit",

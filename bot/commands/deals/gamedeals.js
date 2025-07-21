@@ -2,11 +2,17 @@ import {
   SlashCommandBuilder,
   EmbedBuilder,
   PermissionFlagsBits,
+  StringSelectMenuBuilder,
+  ActionRowBuilder,
+  ComponentType,
 } from "discord.js";
 import GameAlert from "../../models/GameAlert.js";
 import { ERROR_MESSAGES } from "../../utils/constants.js";
-import { getGameImage } from "../../services/steamImageService.js";
 import { createSearchResultEmbed } from "../../utils/embedBuilders.js";
+import {
+  getGamePrices,
+  searchGame,
+} from "../../services/isThereAnyDealService.js";
 
 export const data = new SlashCommandBuilder()
   .setName("gamedeals")
@@ -101,7 +107,7 @@ async function handleAddAlert(interaction, client) {
 
   try {
     const gameDealsService = client.gameDealsService;
-    const games = await gameDealsService.searchGame(game);
+    const games = await gameDealsService.getGameByTitle(game);
 
     if (games.length === 0) {
       return interaction.editReply({
@@ -254,29 +260,120 @@ async function handleSearchDeals(interaction, client) {
   await interaction.deferReply({ ephemeral: true });
 
   try {
-    const gameDealsService = client.gameDealsService;
+    // const gameDealsService = client.gameDealsService;
 
-    const deals = await gameDealsService.getGameDealsByTitle(game);
+    // Step 1: Search for games
+    const games = await searchGame(game);
 
-    if (deals.length === 0) {
+    if (games.length === 0) {
       return interaction.editReply({
-        content: `${ERROR_MESSAGES.NO_DEALS_FOUND} **${game}**.`,
+        content: `${ERROR_MESSAGES.GAME_NOT_FOUND} **${game}**.`,
       });
     }
 
-    const bestDeal = deals[0];
+    // Step 2: Show game selection if multiple results
+    if (games.length === 1) {
+      // Only one result - proceed directly
+      return await showGameDeals(interaction, client, games[0]);
+    }
 
-    const gameImageUrl = bestDeal.steamAppID
-      ? await getGameImage(bestDeal.steamAppID)
-      : bestDeal.thumb;
+    // Multiple results - show selection menu
+    const selectMenu = new StringSelectMenuBuilder()
+      .setCustomId("game_selection")
+      .setPlaceholder("Choose the correct game...")
+      .addOptions(
+        games.slice(0, 25).map((gameItem, index) => ({
+          label:
+            gameItem.title.length > 100
+              ? gameItem.title.substring(0, 97) + "..."
+              : gameItem.title,
+          value: index.toString(),
+        }))
+      );
 
-    const embed = createSearchResultEmbed(bestDeal, gameImageUrl);
+    const row = new ActionRowBuilder().addComponents(selectMenu);
 
-    await interaction.editReply({ embeds: [embed] });
+    const embed = new EmbedBuilder()
+      .setTitle("Multiple Games Found")
+      .setDescription(
+        `Found ${games.length} games matching "${game}". Please select the correct one:`
+      )
+      .setColor("#5865F2")
+      .addFields(
+        games.slice(0, 25).map((gameItem, index) => ({
+          name: `${index + 1}. ${gameItem.title}`,
+          value: "",
+          inline: false,
+        }))
+      );
+
+    if (games.length > 25) {
+      embed.setFooter({
+        text: `Showing 25 of ${games.length} results. Use a more specific search term for better results.`,
+      });
+    }
+
+    const response = await interaction.editReply({
+      embeds: [embed],
+      components: [row],
+    });
+
+    // Step 3: Handle user selection
+    try {
+      const selectInteraction = await response.awaitMessageComponent({
+        componentType: ComponentType.StringSelect,
+        time: 300000, // 5 minutes timeout
+        filter: (i) => i.user.id === interaction.user.id,
+      });
+
+      const selectedIndex = parseInt(selectInteraction.values[0]);
+      const selectedGame = games[selectedIndex];
+
+      await selectInteraction.deferUpdate();
+      await showGameDeals(interaction, selectedGame);
+    } catch (error) {
+      await interaction.editReply({
+        content: "Selection timed out. Please run the command again.",
+        components: [],
+      });
+    }
   } catch (error) {
     console.error("Error searching for deals:", error);
     await interaction.editReply({
       content: "❌ An error occurred while searching for deals.",
+    });
+  }
+}
+
+async function showGameDeals(interaction, selectedGame) {
+  try {
+    let gameImageUrl = null;
+
+    const response = await getGamePrices(selectedGame.id);
+
+    if (response.length === 0) {
+      return interaction.editReply({
+        content: `${ERROR_MESSAGES.NO_DEALS_FOUND} **${selectedGame.external}**.`,
+        components: [],
+      });
+    }
+    const deals = response[0].deals;
+    const bestDeal = deals[0];
+
+    console.log(bestDeal);
+
+    // Use the selected game data for the embed
+    const embed = createSearchResultEmbed(selectedGame, bestDeal, gameImageUrl);
+
+    await interaction.editReply({
+      embeds: [embed],
+      components: [], // Remove selection menu
+    });
+  } catch (error) {
+    console.error("Error fetching game deals:", error);
+    await interaction.editReply({
+      content: "❌ An error occurred while fetching deals.",
+      components: [],
     });
   }
 }
