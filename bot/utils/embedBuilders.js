@@ -76,3 +76,87 @@ export const createAlertCreatedEmbed = (
 
   return embed;
 };
+
+export const createDealNotificationEmbed = (game, deal, alert) => {
+  const storeName = deal.shop.name;
+  const storeLogoURL =
+    STORES[deal.shop.id]?.images?.logo ||
+    STORES[deal.shop.id]?.images?.icon ||
+    STORES[deal.shop.id]?.images?.banner ||
+    null;
+
+  const savingsAmount = (deal.regular.amount - deal.price.amount).toFixed(2);
+
+  const embed = new EmbedBuilder()
+    .setTitle(`🎮 ${game.title} - Deal Alert!`)
+    .setDescription(
+      `**${game.title}** is now on sale and matches your alert criteria!`
+    )
+    .setColor("#00FF00")
+    .addFields(
+      {
+        name: "💰 Sale Price",
+        value: `$${deal.price.amount}`,
+        inline: true,
+      },
+      {
+        name: "💸 Regular Price",
+        value: `~~$${deal.regular.amount}~~`,
+        inline: true,
+      },
+      {
+        name: "📊 Discount",
+        value: `${deal.cut}% OFF`,
+        inline: true,
+      },
+      {
+        name: "💵 You Save",
+        value: `$${savingsAmount}`,
+        inline: true,
+      },
+      {
+        name: "🛒 Store",
+        value: storeName,
+        inline: true,
+      },
+      {
+        name: "⏰ Deal Status",
+        value: deal.expiry
+          ? `Expires: <t:${Math.floor(
+              new Date(deal.expiry).getTime() / 1000
+            )}:R>`
+          : "No expiry",
+        inline: true,
+      },
+      {
+        name: "🔗 Get This Deal",
+        value: `[**Buy Now ↗**](${deal.url})`,
+        inline: false,
+      }
+    )
+    .setThumbnail(storeLogoURL)
+    .setFooter({
+      text: "🎯 Real-time webhook alert • Powered by IsThereAnyDeal",
+      iconURL: "https://avatars.githubusercontent.com/u/87337674?s=200&v=4",
+    })
+    .setTimestamp();
+
+  // Add deal flags if present
+  if (deal.flag) {
+    const flagEmojis = {
+      H: "🏆 Historical Low!",
+      N: "🆕 New Historical Low!",
+      S: "🏪 Store Low!",
+    };
+
+    if (flagEmojis[deal.flag]) {
+      embed.addFields({
+        name: "🏷️ Special Deal",
+        value: flagEmojis[deal.flag],
+        inline: false,
+      });
+    }
+  }
+
+  return embed;
+};
