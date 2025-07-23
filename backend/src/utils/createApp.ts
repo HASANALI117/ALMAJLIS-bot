@@ -5,10 +5,13 @@ import session from "express-session";
 import passport from "passport";
 import MongoStore from "connect-mongo";
 import routes from "../routes";
+import webhookRouter from "../routes/webhooks";
 import "../config/passport";
 
 export const createApp = (): Express => {
   const app = express();
+
+  app.use("/api/webhooks", webhookRouter);
 
   //   Enable parser for JSON requests
   app.use(express.json());
