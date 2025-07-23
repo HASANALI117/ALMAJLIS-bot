@@ -14,6 +14,19 @@ services:
     networks:
       - almajlis-network
 
+  # Redis for pub/sub messaging
+  redis:
+    image: redis:alpine
+    container_name: almajlis-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - almajlis-network
+    command: redis-server --appendonly yes
+
   mongo-express:
     image: mongo-express
     container_name: almajlis-mongo-express
@@ -43,6 +56,7 @@ services:
       NODE_ENV: development
       PORT: 5000
       MONGODB_URI: ${MONGODB_URI}
+      REDIS_URL: ${REDIS_URL}
       DISCORD_REDIRECT_URI: ${DISCORD_REDIRECT_URI}
       DISCORD_CLIENT_ID: ${DISCORD_CLIENT_ID}
       DISCORD_CLIENT_SECRET: ${DISCORD_CLIENT_SECRET}
@@ -55,6 +69,7 @@ services:
       - /app/node_modules
     depends_on:
       - mongodb
+      - redis
     networks:
       - almajlis-network
     command: npm run dev
@@ -95,17 +110,21 @@ services:
       DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN}
       MONGODB_URI: ${MONGODB_URI}
       ITAD_API_KEY: ${ITAD_API_KEY}
+      REDIS_URL: ${REDIS_URL}
     volumes:
       - ./bot:/app
       - /app/node_modules
     depends_on:
       - mongodb
+      - redis
     networks:
       - almajlis-network
     command: npm run dev
 
 volumes:
   mongo-data:
+    driver: local
+  redis-data:
     driver: local
 
 networks:

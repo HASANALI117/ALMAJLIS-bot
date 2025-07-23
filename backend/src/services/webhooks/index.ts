@@ -1,5 +1,5 @@
 import { GameDealAlert } from "../../models";
-// import { publishDealNotification, publishPingEvent } from "../redis";
+import { publishDealNotification, publishPingEvent } from "../redis";
 
 export const processPingEvent = async (hookId: string, body: string) => {
   console.log(`Ping event received for webhook ${hookId}: ${body}`);
@@ -19,12 +19,12 @@ export const processPingEvent = async (hookId: string, body: string) => {
   await pingAlert.save();
 
   // Publish ping event to Redis for testing
-  // await publishPingEvent({
-  //   hookId,
-  //   eventType: "ping",
-  //   payload,
-  //   timestamp: new Date().toISOString(),
-  // });
+  await publishPingEvent({
+    hookId,
+    eventType: "ping",
+    payload,
+    timestamp: new Date().toISOString(),
+  });
 
   if (payload === "pong") {
     console.log(`✅ Webhook ${hookId} ping test successful`);
@@ -57,15 +57,15 @@ export const processWaitlistNotification = async (
     );
 
     // Publish to Redis for real-time bot notification
-    // const published = await publishDealNotification(dealAlert);
+    const published = await publishDealNotification(dealAlert);
 
-    // if (published) {
-    //   // Mark as processed after successful Redis publish
-    //   dealAlert.processed = true;
-    //   dealAlert.notificationSent = true;
-    //   await dealAlert.save();
-    //   console.log(`✅ Deal notification published to Redis successfully`);
-    // }
+    if (published) {
+      // Mark as processed after successful Redis publish
+      dealAlert.processed = true;
+      dealAlert.notificationSent = true;
+      await dealAlert.save();
+      console.log(`✅ Deal notification published to Redis successfully`);
+    }
 
     // Process each game's deals
     for (const game of games) {
