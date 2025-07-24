@@ -2,14 +2,15 @@ import { config } from "dotenv";
 import { createApp } from "./utils/createApp";
 import "./config/database";
 import { closeRedisConnection, initializeRedis } from "./services/redis";
+import { setupGracefulShutdown } from "./utils/gracefulShutdown";
 config({ path: "../.env" });
 
 const PORT = process.env.PORT || 5000;
 
-async function main() {
+function main() {
   try {
     // Initialize Redis
-    await initializeRedis();
+    initializeRedis();
 
     // Express server setup
     const app = createApp();
@@ -19,14 +20,7 @@ async function main() {
     });
 
     // Graceful shutdown
-    process.on("SIGINT", async () => {
-      console.log("🔄 Shutting down server...");
-      await closeRedisConnection();
-      server.close(() => {
-        console.log("✅ Server shut down gracefully");
-        process.exit(0);
-      });
-    });
+    setupGracefulShutdown(server, closeRedisConnection);
   } catch (error) {
     console.log("Error starting the server:", error);
   }
