@@ -16,20 +16,27 @@ export const handleDealAlertController = async (
 
     // Validate headers
     if (!hookId || !eventType) {
-      return res.status(400).json({ error: "Missing required ITAD headers" });
+      return res.status(400).json({
+        error: "Missing required ITAD headers",
+        details: { hookId: !!hookId, eventType: !!eventType },
+      });
     }
 
     if (userAgent !== "ITAD-Webhooks/1.0 (+https://isthereanydeal.com)") {
-      return res.status(400).json({ error: "Invalid User-Agent" });
+      return res.status(400).json({
+        error: "Invalid User-Agent",
+        expected: "ITAD-Webhooks/1.0 (+https://isthereanydeal.com)",
+        received: userAgent,
+      });
     }
 
     if (contentType !== "application/json") {
-      return res.status(400).json({ error: "Invalid Content-Type" });
+      return res.status(400).json({
+        error: "Invalid Content-Type",
+        expected: "application/json",
+        received: contentType,
+      });
     }
-
-    // console.log(
-    //   `Received ITAD webhook - Event: ${eventType}, Hook ID: ${hookId}`
-    // );
 
     switch (eventType) {
       case "ping":
@@ -41,13 +48,25 @@ export const handleDealAlertController = async (
         break;
 
       default:
-        console.warn(`Unknown event type: ${eventType}`);
-        return res.status(400).json({ error: "Unknown event type" });
+        console.warn(`⚠️ Unknown event type: ${eventType}`);
+        return res.status(400).json({
+          error: "Unknown event type",
+          supportedTypes: ["ping", "notification-waitlist"],
+          received: eventType,
+        });
     }
 
-    res.status(200).json({ message: "Webhook processed successfully" });
+    res.status(200).json({
+      message: "Webhook processed successfully",
+      hookId,
+      eventType,
+      timestamp: new Date().toISOString(),
+    });
   } catch (error) {
-    console.error("Error processing ITAD webhook:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error("❌ Error processing ITAD webhook:", error);
+    res.status(500).json({
+      error: "Internal server error",
+      message: error instanceof Error ? error.message : "Unknown error",
+    });
   }
 };
