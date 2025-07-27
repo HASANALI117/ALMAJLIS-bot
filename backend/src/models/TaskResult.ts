@@ -6,9 +6,8 @@ const taskResultSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "AutomationTask",
       required: true,
-      index: true,
     },
-    executedAt: { type: Date, required: true, index: true },
+    executedAt: { type: Date, required: true },
     status: {
       type: String,
       enum: [

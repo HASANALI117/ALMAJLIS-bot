@@ -4,7 +4,7 @@ const automationTaskSchema = new Schema(
   {
     name: { type: String, required: true },
     description: String,
-    guildId: { type: String, required: true, index: true },
+    guildId: { type: String, required: true },
     channelId: { type: String, required: true },
     taskType: {
       type: String,

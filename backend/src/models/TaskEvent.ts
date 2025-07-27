@@ -6,7 +6,6 @@ const taskEventSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "AutomationTask",
       required: true,
-      index: true,
     },
     type: {
       type: String,
@@ -21,26 +20,12 @@ const taskEventSchema = new Schema(
         "task_cancelled",
       ],
       required: true,
-      index: true,
     },
-    data: {
-      type: Schema.Types.Mixed,
-      required: true,
-    },
-    timestamp: {
-      type: Date,
-      default: Date.now,
-      index: true,
-    },
-    guildId: {
-      type: String,
-      index: true,
-    },
-    channelId: {
-      type: String,
-      index: true,
-    },
-    userId: String,
+    data: { type: Schema.Types.Mixed, required: true },
+    timestamp: { type: Date, default: Date.now },
+    guildId: { type: String },
+    channelId: { type: String },
+    userId: { type: String },
     metadata: {
       itemCount: Number,
       duration: Number,
