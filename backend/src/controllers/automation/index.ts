@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { automationService } from "../../services/automation";
-import { taskHandlerService } from "../../services/task-handler";
+import { taskHandlerService } from "../../server";
 
 export const automationController = {
   // Create new automation task

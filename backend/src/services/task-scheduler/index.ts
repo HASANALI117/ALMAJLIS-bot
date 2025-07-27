@@ -1,6 +1,6 @@
 import cron from "node-cron";
 import { AutomationTask } from "../../utils/types";
-import { taskHandlerService } from "../task-handler";
+import { taskHandlerService } from "../../server";
 import AutomationTaskModel from "../../models/AutomationTask";
 import TaskResultModel from "../../models/TaskResult";
 

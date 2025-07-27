@@ -151,4 +151,4 @@ class TaskHandlerService {
   }
 }
 
-export const taskHandlerService = new TaskHandlerService();
+export { TaskHandlerService };

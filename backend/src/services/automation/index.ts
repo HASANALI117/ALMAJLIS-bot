@@ -7,7 +7,7 @@ import {
 import AutomationTaskModel from "../../models/AutomationTask";
 import TaskResultModel from "../../models/TaskResult";
 import { taskSchedulerService } from "../task-scheduler";
-import { taskHandlerService } from "../task-handler";
+import { taskHandlerService } from "../../server";
 
 class AutomationService {
   async createTask(taskData: Partial<AutomationTask>): Promise<AutomationTask> {
