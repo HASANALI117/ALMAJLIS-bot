@@ -23,7 +23,7 @@ const automationTaskSchema = new Schema(
       ],
       required: true,
     },
-    taskConfig: { type: Map, of: Schema.Types.Mixed, required: true },
+    taskConfig: { type: Object, required: true },
     schedule: {
       type: {
         type: String,
